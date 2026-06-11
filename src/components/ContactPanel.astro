@@ -1,0 +1,68 @@
+---
+import { profile } from "@/data/profile";
+---
+
+<div class="contact-panel">
+  {
+    profile.socials.map((s) => (
+      <a href={s.href} class="contact-panel__row" target="_blank" rel="noopener">
+        <span class="contact-panel__platform">{s.label}</span>
+        <span class="contact-panel__arrow">-&gt;</span>
+        <span class="contact-panel__value">{s.value}</span>
+      </a>
+    ))
+  }
+</div>
+
+<style>
+  .contact-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .contact-panel__row {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 6px 8px;
+    background: rgba(13, 13, 13, 0.5);
+    border: 1px solid rgba(232, 130, 10, 0.1);
+    text-decoration: none;
+    transition: border-color 0.15s, background 0.15s;
+  }
+
+  .contact-panel__row:hover {
+    border-color: rgba(232, 130, 10, 0.3);
+    background: rgba(232, 130, 10, 0.04);
+  }
+
+  .contact-panel__platform {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    font-weight: 500;
+    color: var(--cyber-text-dim);
+    width: 80px;
+    flex-shrink: 0;
+  }
+
+  .contact-panel__arrow {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    color: rgba(232, 130, 10, 0.3);
+    width: 32px;
+    flex-shrink: 0;
+  }
+
+  .contact-panel__value {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--cyber-text);
+    flex: 1;
+    text-align: right;
+  }
+
+  .contact-panel__row:hover .contact-panel__value {
+    color: var(--cyber-orange);
+  }
+</style>

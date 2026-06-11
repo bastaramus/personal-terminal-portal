@@ -1,0 +1,193 @@
+---
+import type { Project } from "@/data/projects";
+
+interface Props {
+  project: Project;
+}
+
+const { project } = Astro.props;
+
+const statusColor: Record<string, string> = {
+  ACTIVE: "var(--cyber-green)",
+  MAINTAINED: "var(--cyber-orange)",
+  BETA: "var(--cyber-orange)",
+  ARCHIVED: "var(--cyber-text-dim)",
+};
+---
+
+<div class="project-card">
+  <div class="project-card__top">
+    <div class="project-card__meta">
+      <h3 class="project-card__name">{project.name}</h3>
+      <div class="project-card__badges">
+        <span class="project-card__type">{project.type}</span>
+        <span
+          class="project-card__status"
+          style={`color: ${statusColor[project.status]}`}
+        >
+          <span
+            class="project-card__status-dot"
+            style={`background: ${statusColor[project.status]}; box-shadow: 0 0 4px ${statusColor[project.status]}`}
+          ></span>
+          {project.status}
+        </span>
+      </div>
+    </div>
+    <div class="project-card__actions">
+      {project.repo && (
+        <a href={project.repo} target="_blank" rel="noopener" class="project-card__action" title="Repository">
+          GH
+        </a>
+      )}
+      {project.url && (
+        <a href={project.url} target="_blank" rel="noopener" class="project-card__action" title="Live">
+          ↗
+        </a>
+      )}
+    </div>
+  </div>
+
+  <p class="project-card__desc">{project.desc}</p>
+
+  <div class="project-card__tags">
+    {project.tags.map((tag) => <span class="project-card__tag">{tag}</span>)}
+  </div>
+
+  <div class="project-card__stats">
+    {project.stars !== undefined && (
+      <span class="project-card__stat">★ {project.stars.toLocaleString()}</span>
+    )}
+    {project.forks !== undefined && (
+      <span class="project-card__stat">⑂ {project.forks}</span>
+    )}
+  </div>
+</div>
+
+<style>
+  .project-card {
+    background: rgba(13, 13, 13, 0.7);
+    border: 1px solid rgba(232, 130, 10, 0.25);
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    height: 100%;
+  }
+
+  .project-card:hover {
+    border-color: rgba(232, 130, 10, 0.5);
+    box-shadow: 0 0 12px rgba(232, 130, 10, 0.08);
+  }
+
+  .project-card__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .project-card__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .project-card__name {
+    font-family: var(--font-sans);
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--cyber-orange);
+    margin: 0;
+  }
+
+  .project-card__badges {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .project-card__type {
+    font-family: var(--font-mono);
+    font-size: 0.55rem;
+    letter-spacing: 0.08em;
+    color: var(--cyber-text-dim);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 1px 6px;
+  }
+
+  .project-card__status {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    font-family: var(--font-mono);
+    font-size: 0.55rem;
+  }
+
+  .project-card__status-dot {
+    display: inline-block;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .project-card__actions {
+    display: flex;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  .project-card__action {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    color: var(--cyber-text-dim);
+    background: none;
+    border: 1px solid rgba(232, 130, 10, 0.2);
+    padding: 3px 6px;
+    text-decoration: none;
+    transition: color 0.15s, border-color 0.15s;
+    line-height: 1;
+  }
+
+  .project-card__action:hover {
+    color: var(--cyber-orange);
+    border-color: var(--cyber-orange);
+  }
+
+  .project-card__desc {
+    font-size: 0.65rem;
+    color: var(--cyber-text);
+    line-height: 1.7;
+    margin: 0;
+    flex: 1;
+  }
+
+  .project-card__tags {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+
+  .project-card__tag {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.04em;
+    color: var(--cyber-orange);
+    background: rgba(232, 130, 10, 0.06);
+    border: 1px solid rgba(232, 130, 10, 0.3);
+    padding: 2px 7px;
+  }
+
+  .project-card__stats {
+    display: flex;
+    gap: 14px;
+  }
+
+  .project-card__stat {
+    font-family: var(--font-mono);
+    font-size: 0.58rem;
+    color: var(--cyber-text-dim);
+  }
+</style>

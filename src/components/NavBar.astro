@@ -1,0 +1,133 @@
+---
+const NAV_LINKS = [
+  { label: "HOME", href: "/" },
+  { label: "BLOG", href: "/blog" },
+  { label: "PROJECTS", href: "/projects" },
+  { label: "ABOUT", href: "/#about" },
+  { label: "CONTACT", href: "/#contact" },
+];
+
+const currentPath = Astro.url.pathname;
+---
+
+<nav class="navbar">
+  <div class="navbar__inner">
+    <a href="/" class="navbar__logo">
+      <span class="navbar__logo-bracket">[</span>
+      <span class="navbar__logo-name">xomenko.com</span>
+      <span class="navbar__logo-bracket">]</span>
+      <span class="navbar__cursor blink">▌</span>
+    </a>
+
+    <div class="navbar__links">
+      {
+        NAV_LINKS.map((link) => (
+          <a
+            href={link.href}
+            class:list={[
+              "navbar__link",
+              { "navbar__link--active": currentPath === link.href },
+            ]}
+          >
+            {link.label}
+          </a>
+        ))
+      }
+    </div>
+
+    <div class="navbar__status">
+      <span class="navbar__status-dot blink"></span>
+      <span class="navbar__status-text">ONLINE</span>
+    </div>
+  </div>
+</nav>
+
+<style>
+  .navbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(13, 13, 13, 0.95);
+    border-bottom: 1px solid var(--cyber-orange-dim);
+    backdrop-filter: blur(8px);
+  }
+
+  .navbar__inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 24px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+  }
+
+  .navbar__logo {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--cyber-orange);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 1px;
+    flex-shrink: 0;
+  }
+
+  .navbar__logo-bracket {
+    opacity: 0.5;
+  }
+
+  .navbar__logo-name {
+    margin: 0 2px;
+  }
+
+  .navbar__cursor {
+    color: var(--cyber-orange);
+  }
+
+  .navbar__links {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex: 1;
+  }
+
+  .navbar__link {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    font-weight: 500;
+    color: var(--cyber-text-dim);
+    text-decoration: none;
+    letter-spacing: 0.1em;
+    transition: color 0.15s;
+  }
+
+  .navbar__link:hover,
+  .navbar__link--active {
+    color: var(--cyber-orange);
+  }
+
+  .navbar__status {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-shrink: 0;
+  }
+
+  .navbar__status-dot {
+    display: inline-block;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--cyber-green);
+    box-shadow: 0 0 6px var(--cyber-green);
+  }
+
+  .navbar__status-text {
+    font-family: var(--font-mono);
+    font-size: 0.55rem;
+    color: var(--cyber-green);
+    letter-spacing: 0.1em;
+  }
+</style>

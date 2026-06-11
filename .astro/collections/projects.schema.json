@@ -1,0 +1,54 @@
+{
+  "$ref": "#/definitions/projects",
+  "definitions": {
+    "projects": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "ACTIVE",
+            "MAINTAINED",
+            "BETA",
+            "ARCHIVED"
+          ]
+        },
+        "repo": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        },
+        "stars": {
+          "type": "number"
+        },
+        "forks": {
+          "type": "number"
+        },
+        "$schema": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "description",
+        "status"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

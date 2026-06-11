@@ -1,0 +1,60 @@
+---
+const quote = {
+  text: "Automation is not about replacing people — it's about freeing them to do work that actually matters.",
+  author: "Dmytro Khomenko",
+};
+---
+
+<div class="quote-panel">
+  <div class="quote-panel__mark">"</div>
+  <p class="quote-panel__text">{quote.text}</p>
+  <div class="quote-panel__author">
+    <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M13 10V3L4 14h7v7l9-11h-7z" />
+    </svg>
+    <span>— {quote.author}</span>
+  </div>
+</div>
+
+<style>
+  .quote-panel {
+    position: relative;
+    padding: 16px 20px;
+    background: rgba(232, 130, 10, 0.03);
+    border: 1px solid rgba(232, 130, 10, 0.2);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .quote-panel__mark {
+    position: absolute;
+    top: 8px;
+    left: 12px;
+    color: rgba(232, 130, 10, 0.4);
+    font-family: var(--font-mono);
+    font-size: 2.5rem;
+    line-height: 1;
+    pointer-events: none;
+  }
+
+  .quote-panel__text {
+    color: var(--cyber-text-bright);
+    font-size: 0.8rem;
+    line-height: 1.7;
+    font-style: italic;
+    padding-top: 12px;
+    margin: 0;
+    flex: 1;
+  }
+
+  .quote-panel__author {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--cyber-orange);
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+  }
+</style>

@@ -1,0 +1,40 @@
+---
+interface Props {
+  tag: string;
+  href?: string;
+}
+
+const { tag, href } = Astro.props;
+---
+
+{
+  href ? (
+    <a href={href} class="skill-tag skill-tag--link">{tag}</a>
+  ) : (
+    <span class="skill-tag">{tag}</span>
+  )
+}
+
+<style>
+  .skill-tag {
+    display: inline-block;
+    background: rgba(232, 130, 10, 0.06);
+    border: 1px solid rgba(232, 130, 10, 0.3);
+    color: var(--cyber-text);
+    padding: 2px 7px;
+    font-size: 0.62rem;
+    font-family: var(--font-mono);
+    letter-spacing: 0.04em;
+  }
+
+  .skill-tag--link {
+    text-decoration: none;
+    transition: border-color 0.15s, color 0.15s, background 0.15s;
+  }
+
+  .skill-tag--link:hover {
+    border-color: var(--cyber-orange);
+    color: var(--cyber-orange);
+    background: rgba(232, 130, 10, 0.1);
+  }
+</style>

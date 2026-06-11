@@ -1,0 +1,107 @@
+---
+import { experience } from "@/data/profile";
+---
+
+<div class="cv-timeline">
+  {
+    experience.map((item, i) => (
+      <div class="cv-timeline__item">
+        <div class="cv-timeline__marker">
+          <span class="cv-timeline__dot" />
+          {i < experience.length - 1 && <span class="cv-timeline__line" />}
+        </div>
+        <div class="cv-timeline__content">
+          <div class="cv-timeline__header">
+            <span class="cv-timeline__role">{item.role}</span>
+            <span class="cv-timeline__period">{item.period}</span>
+          </div>
+          <div class="cv-timeline__company">{item.company}</div>
+          <p class="cv-timeline__desc">{item.desc}</p>
+        </div>
+      </div>
+    ))
+  }
+</div>
+
+<style>
+  .cv-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .cv-timeline__item {
+    display: flex;
+    gap: 12px;
+  }
+
+  .cv-timeline__marker {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+    padding-top: 3px;
+  }
+
+  .cv-timeline__dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--cyber-orange);
+    border: 1px solid var(--cyber-orange);
+    box-shadow: 0 0 6px rgba(232, 130, 10, 0.4);
+    flex-shrink: 0;
+  }
+
+  .cv-timeline__line {
+    width: 1px;
+    flex: 1;
+    background: rgba(232, 130, 10, 0.2);
+    margin-top: 4px;
+    margin-bottom: 0;
+    min-height: 16px;
+  }
+
+  .cv-timeline__content {
+    padding-bottom: 16px;
+    flex: 1;
+  }
+
+  .cv-timeline__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 2px;
+    flex-wrap: wrap;
+  }
+
+  .cv-timeline__role {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: var(--cyber-text-bright);
+  }
+
+  .cv-timeline__period {
+    font-family: var(--font-mono);
+    font-size: 0.58rem;
+    color: var(--cyber-text-dim);
+    flex-shrink: 0;
+  }
+
+  .cv-timeline__company {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    color: var(--cyber-orange);
+    margin-bottom: 6px;
+    letter-spacing: 0.04em;
+  }
+
+  .cv-timeline__desc {
+    font-size: 0.65rem;
+    color: var(--cyber-text-dim);
+    line-height: 1.65;
+    margin: 0;
+  }
+</style>
