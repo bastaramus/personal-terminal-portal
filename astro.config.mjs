@@ -16,5 +16,11 @@ export default defineConfig({
   integrations: [printUrl],
   vite: {
     plugins: [tailwindcss()],
+    server: {
+      watch: {
+        usePolling: true,
+        interval: 500,
+      },
+    },
   },
 });
