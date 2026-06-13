@@ -1,21 +1,13 @@
 export const profile = {
   name: { first: "DMYTRO", last: "KHOMENKO" },
   title: "DEVOPS ENGINEER",
-  tags: ["AWS CLOUD", "HYBRID INFRA", "TEAM LEAD"],
-  bio: "DevOps engineer and team lead with 10+ years of experience designing, automating, and operating infrastructure at scale. Core focus: AWS cloud, hybrid AWS + VMware vSphere environments, Kubernetes, Terraform, Ansible, and the full DevOps toolchain. I build systems that are observable, reproducible, and resilient — and teams that can own them.",
-  location: "Kyiv, Ukraine",
+  tags: ["DEVOPS ARCHITECT", "PLATFORM ENGINEER", "TEAM LEAD"],
+  bio: "From bare-metal servers to cloud-native applications. My background combines hands-on DevOps engineering, platform architecture, and technical leadership. This website is a place to share my experience, projects, and technical notes on building reliable infrastructures, CI/CD processes, and scalable DevOps platforms.",
+  location: "Wroclaw, Poland",
   status: "AVAILABLE FOR OPPORTUNITIES",
   focus: "AWS / Hybrid Infra / Kubernetes / IaC",
-  stats: [
-    { label: "YEARS EXP", value: "10+" },
-    { label: "PIPELINES", value: "200+" },
-    { label: "CLUSTERS", value: "40+" },
-    { label: "COFFEES", value: "∞" },
-  ],
   socials: [
-    { label: "GitHub", value: "github.com/xomenko", href: "https://github.com/xomenko" },
-    { label: "LinkedIn", value: "linkedin.com/in/xomenko", href: "https://linkedin.com/in/xomenko" },
-    { label: "Twitter", value: "@xomenko_dev", href: "https://twitter.com/xomenko_dev" },
+    { label: "LinkedIn", value: "linkedin.com/in/dmytro-khomenko", href: "https://www.linkedin.com/in/dmytro-khomenko-9221031a4" },
     { label: "Email", value: "hi@xomenko.com", href: "mailto:hi@xomenko.com" },
   ],
 };
