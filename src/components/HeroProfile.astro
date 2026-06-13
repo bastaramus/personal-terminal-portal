@@ -44,10 +44,14 @@ import { profile } from "@/data/profile";
     <!-- Content column -->
     <div class="hero__content">
       <div class="hero__prompt">
-        <span class="hero__prompt-user">root@xomenko.com</span>
-        <span class="hero__prompt-sep">:~$</span>
-        <span class="hero__prompt-cmd">./display --user-info</span>
-        <span class="blink hero__prompt-cursor">▌</span>
+        <div class="hero__prompt-line1">
+          <span class="hero__prompt-user">root@xomenko.com</span>
+          <span class="hero__prompt-sep">:~$</span>
+        </div>
+        <div class="hero__prompt-line2">
+          <span class="hero__prompt-cmd">./display --user-info</span>
+          <span class="blink hero__prompt-cursor">▌</span>
+        </div>
       </div>
 
       <h1 class="hero__name flicker">
@@ -212,7 +216,7 @@ import { profile } from "@/data/profile";
   }
 
   .hero__status-text {
-    font-size: 0.6rem;
+    font-size: 0.95rem;
     color: var(--cyber-orange);
     letter-spacing: 0.1em;
   }
@@ -249,7 +253,24 @@ import { profile } from "@/data/profile";
     align-items: center;
     gap: 6px;
     margin-bottom: 12px;
-    font-size: 0.7rem;
+    font-size: 0.875rem;
+    flex-wrap: nowrap;
+  }
+
+  .hero__prompt-line1,
+  .hero__prompt-line2 {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 640px) {
+    .hero__prompt {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2px;
+    }
   }
 
   .hero__prompt-user { color: var(--cyber-orange); }
@@ -289,7 +310,7 @@ import { profile } from "@/data/profile";
   .hero__title-text {
     color: var(--cyber-orange);
     font-family: var(--font-sans);
-    font-size: 0.75rem;
+    font-size: 0.95rem;
     letter-spacing: 0.2em;
     text-shadow: 0 0 8px rgba(232, 130, 10, 0.4);
   }
@@ -305,14 +326,14 @@ import { profile } from "@/data/profile";
     border: 1px solid rgba(232, 130, 10, 0.3);
     color: var(--cyber-orange);
     padding: 2px 10px;
-    font-size: 0.6rem;
+    font-size: 0.95rem;
     letter-spacing: 0.12em;
     background: rgba(232, 130, 10, 0.05);
   }
 
   .hero__bio {
     color: var(--cyber-text);
-    font-size: 0.8rem;
+    font-size: 1rem;
     line-height: 1.8;
     max-width: 560px;
     margin-bottom: 28px;
@@ -332,7 +353,7 @@ import { profile } from "@/data/profile";
     align-items: center;
     gap: 6px;
     padding: 8px 20px;
-    font-size: 0.65rem;
+    font-size: 0.82rem;
     letter-spacing: 0.1em;
     font-family: var(--font-mono);
     border: 1px solid rgba(232, 130, 10, 0.3);
@@ -370,7 +391,7 @@ import { profile } from "@/data/profile";
     display: flex;
     align-items: center;
     gap: 5px;
-    font-size: 0.65rem;
+    font-size: 0.82rem;
     color: var(--cyber-text-dim);
     text-decoration: none;
     transition: color 0.2s;
@@ -386,5 +407,67 @@ import { profile } from "@/data/profile";
 
   .hero__social-value {
     color: inherit;
+  }
+
+  /* ── Tablet ── */
+  @media (max-width: 1024px) {
+    .hero__inner {
+      grid-template-columns: 220px 1fr;
+      gap: 28px;
+      padding: 40px 24px 32px;
+    }
+
+    .hero__avatar-frame {
+      width: 200px;
+      height: 250px;
+    }
+
+    .hero__avatar-links {
+      width: 200px;
+    }
+  }
+
+  /* ── Mobile ── */
+  @media (max-width: 640px) {
+    .hero__inner {
+      grid-template-columns: 1fr;
+      padding: 32px 16px 24px;
+      gap: 24px;
+      justify-items: center;
+      text-align: center;
+    }
+
+    .hero__avatar-frame {
+      width: 160px;
+      height: 200px;
+    }
+
+    .hero__avatar-links {
+      width: 160px;
+    }
+
+    .hero__title-row {
+      justify-content: center;
+    }
+
+    .hero__tags {
+      justify-content: center;
+    }
+
+    .hero__bio {
+      text-align: left;
+      border-left: none;
+      padding-left: 0;
+      border-top: 2px solid rgba(232, 130, 10, 0.3);
+      padding-top: 12px;
+    }
+
+    .hero__ctas {
+      justify-content: center;
+    }
+
+    .hero__socials {
+      justify-content: center;
+    }
   }
 </style>
