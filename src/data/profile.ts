@@ -8,27 +8,45 @@ export const profile = {
   focus: "AWS / Hybrid Infra / Kubernetes / IaC",
   socials: [
     { label: "LinkedIn", value: "linkedin.com/in/dmytro-khomenko", href: "https://www.linkedin.com/in/dmytro-khomenko-9221031a4" },
-    { label: "Email", value: "hi@xomenko.com", href: "mailto:hi@xomenko.com" },
+    { label: "Email", value: "mail@xomenko.com", href: "mailto:mail@xomenko.com" },
   ],
 };
 
 export const experience = [
   {
-    role: "DevOps Engineer / Team Lead",
-    company: "Acme Corp",
-    period: "2022 — present",
-    desc: "Leading a DevOps team of 6. Architected and operate a hybrid AWS + VMware vSphere platform across multiple regions. Standardised IaC with Terraform + Atlantis, drove full GitOps adoption with ArgoCD, and built CI/CD pipelines serving 50+ dev teams.",
-  },
-  {
-    role: "Senior DevOps Engineer",
-    company: "StartupXYZ",
-    period: "2019 — 2022",
-    desc: "Migrated legacy workloads from on-prem VMware to AWS EKS. Built CI/CD pipelines from scratch with GitHub Actions and ArgoCD. Deployed full observability stack (Prometheus, Grafana, Loki, Jaeger) across distributed microservices. Managed infrastructure as code with Terraform and provisioning with Packer + Ansible.",
+    role: "DevOps Architect / Team Lead",
+    company: "Corsair Gaming, Inc.",
+    period: "02/2022 — present",
+    desc: "Owned DevOps strategy and execution across the entire R&D department covering web, desktop, mobile, and firmware. Built and led an international DevOps team of 4 engineers. Developed an internal developer platform for CI/CD, binary signing, artifact management, and infrastructure automation. Managed Kubernetes/GitOps for web services, SRE practices, 20+ developer-facing services with Keycloak SSO, and the full R&D infrastructure budget.",
   },
   {
     role: "DevOps Engineer",
-    company: "Agency Co",
-    period: "2015 — 2019",
-    desc: "Linux system administration across hybrid on-prem and AWS environments. Automated server provisioning and config management with Ansible. Introduced Docker and the first CI pipelines across 20+ client environments. Managed VMware vSphere clusters and AWS EC2/VPC infrastructure.",
+    company: "Checkmarx",
+    period: "10/2020 — 07/2025",
+    desc: "Built automated self-service VM provisioning for hybrid VMware + AWS EC2 at scale (hundreds of VMs daily). Designed governance for 50+ AWS accounts within a single AWS Organization. Developed large reusable Helm charts, improved Kubernetes deployment standards, and modernized CI/CD pipelines with GitHub Actions and CircleCI. Contributed to critical incident response and supported open-source project transitions.",
+  },
+  {
+    role: "DevOps Engineer",
+    company: "DevelopEx Software",
+    period: "2018 — 2022",
+    desc: "Joined as the first DevOps engineer and introduced DevOps practices across dozens of projects spanning web, mobile, desktop, firmware, and IoT. Provisioned and configured AWS environments for client projects. Built a structured mentorship program for incoming DevOps engineers and helped establish cross-functional delivery standards.",
+  },
+  {
+    role: "Head of IT Department",
+    company: "DevelopEx Software",
+    period: "2013 — 2018",
+    desc: "Built and led a team of 6 system administrators in a rapidly growing company. Scaled on-premises infrastructure to 3 server racks with 20 physical servers and designed a hybrid AWS cloud environment. Defined IT infrastructure strategy, roadmap, and operational standards. Established monitoring, backup, DR, and incident response processes.",
+  },
+  {
+    role: "NOC Engineer",
+    company: "CYFRA Internet Service Provider",
+    period: "2012 — 2013",
+    desc: "Monitored production network infrastructure and troubleshot connectivity, routing, switching, and performance issues at ISP scale. Gained hands-on experience with provider-grade network equipment and operational practices around security, access control, and incident handling.",
+  },
+  {
+    role: "Support Engineer",
+    company: "UKR.NET",
+    period: "2011 — 2012",
+    desc: "Managed on-premises FreeBSD servers, ZFS file systems, Postfix mail servers, and Apache web servers for one of Ukraine's largest internet portals. Built a strong foundation in Unix system administration, networking, and production infrastructure reliability.",
   },
 ];

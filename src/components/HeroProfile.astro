@@ -1,5 +1,7 @@
 ---
 import { profile } from "@/data/profile";
+import ContactPanel from "@/components/ContactPanel.astro";
+const promptUserEncoded = Buffer.from("root@xomenko.com").toString("base64");
 ---
 
 <section class="hero">
@@ -45,7 +47,7 @@ import { profile } from "@/data/profile";
     <div class="hero__content">
       <div class="hero__prompt">
         <div class="hero__prompt-line1">
-          <span class="hero__prompt-user">root@xomenko.com</span>
+          <span class="hero__prompt-user" data-e={promptUserEncoded}></span>
           <span class="hero__prompt-sep">:~$</span>
         </div>
         <div class="hero__prompt-line2">
@@ -72,20 +74,98 @@ import { profile } from "@/data/profile";
       <p class="hero__bio">{profile.bio}</p>
 
       <div class="hero__ctas">
-        <a href="#projects" class="hero__cta hero__cta--primary">
-          <span>›</span> VIEW PROJECTS
-        </a>
-        <a href="#contact" class="hero__cta">
+        <button class="hero__cta hero__cta--primary" id="ssh-key-btn">
+          <span>$</span> GET SSH KEY
+        </button>
+        <button class="hero__cta" id="contact-modal-btn">
           <span>✉</span> INIT CONTACT
+        </button>
+        <a href="/cv.pdf" class="hero__cta" download="Dmytro_Khomenko_CV.pdf">
+          <span>↓</span> DOWNLOAD CV
         </a>
-        <a href="/cv.pdf" class="hero__cta">
-          <span>↗</span> DOWNLOAD CV
-        </a>
+      </div>
+
+      <!-- Contact modal -->
+      <div class="ssh-modal" id="contact-modal" aria-hidden="true">
+        <div class="ssh-modal__box">
+          <div class="ssh-modal__header">
+            <span class="ssh-modal__title">// CONTACT</span>
+            <button class="ssh-modal__close" id="contact-modal-close" aria-label="Close">✕</button>
+          </div>
+          <div class="ssh-modal__body">
+            <ContactPanel />
+          </div>
+        </div>
+      </div>
+
+      <!-- SSH key modal -->
+      <div class="ssh-modal" id="ssh-modal" aria-hidden="true">
+        <div class="ssh-modal__box">
+          <div class="ssh-modal__header">
+            <span class="ssh-modal__title">// SSH.PUBLIC_KEY</span>
+            <button class="ssh-modal__close" id="ssh-modal-close" aria-label="Close">✕</button>
+          </div>
+          <div class="ssh-modal__body">
+            <p class="ssh-modal__hint">Add to <code>~/.ssh/authorized_keys</code> or share-access dialog</p>
+            <pre class="ssh-modal__key" id="ssh-key-text">ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDYZThIXy1W2N3EcU1KRSB+Q425vRr5x7AMEVU5ukJmm dmytro-khomenko</pre>
+            <button class="ssh-modal__copy" id="ssh-copy-btn">
+              <span id="ssh-copy-label">⎘ COPY KEY</span>
+            </button>
+          </div>
+        </div>
       </div>
 
     </div>
   </div>
 </section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.hero__prompt-user[data-e]').forEach((el) => {
+    el.textContent = atob(el.dataset.e!);
+  });
+
+  // Contact modal
+  const contactModal = document.getElementById('contact-modal')!;
+  document.getElementById('contact-modal-btn')!.addEventListener('click', () => {
+    contactModal.setAttribute('aria-hidden', 'false');
+    contactModal.classList.add('ssh-modal--open');
+  });
+  const closeContact = () => {
+    contactModal.setAttribute('aria-hidden', 'true');
+    contactModal.classList.remove('ssh-modal--open');
+  };
+  document.getElementById('contact-modal-close')!.addEventListener('click', closeContact);
+  contactModal.addEventListener('click', (e) => { if (e.target === contactModal) closeContact(); });
+
+  // SSH key modal
+  const modal = document.getElementById('ssh-modal')!;
+  const openBtn = document.getElementById('ssh-key-btn')!;
+  const closeBtn = document.getElementById('ssh-modal-close')!;
+  const copyBtn = document.getElementById('ssh-copy-btn')!;
+  const copyLabel = document.getElementById('ssh-copy-label')!;
+  const keyText = document.getElementById('ssh-key-text')!;
+
+  openBtn.addEventListener('click', () => {
+    modal.setAttribute('aria-hidden', 'false');
+    modal.classList.add('ssh-modal--open');
+  });
+
+  const closeModal = () => {
+    modal.setAttribute('aria-hidden', 'true');
+    modal.classList.remove('ssh-modal--open');
+  };
+
+  closeBtn.addEventListener('click', closeModal);
+  modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { closeModal(); closeContact(); } });
+
+  copyBtn.addEventListener('click', () => {
+    navigator.clipboard.writeText(keyText.textContent!.trim()).then(() => {
+      copyLabel.textContent = '✓ COPIED';
+      setTimeout(() => { copyLabel.textContent = '⎘ COPY KEY'; }, 2000);
+    });
+  });
+</script>
 
 <style>
   .hero {
@@ -287,6 +367,16 @@ import { profile } from "@/data/profile";
     line-height: 1.1;
     margin-bottom: 8px;
     text-shadow: 0 0 30px rgba(232, 130, 10, 0.3), 0 0 60px rgba(232, 130, 10, 0.1);
+    position: relative;
+  }
+
+  .hero__name::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--scanlines);
+    pointer-events: none;
+    z-index: 1;
   }
 
   .hero__name-last {
@@ -469,5 +559,136 @@ import { profile } from "@/data/profile";
     .hero__socials {
       justify-content: center;
     }
+  }
+
+  /* SSH key modal */
+  .ssh-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .ssh-modal--open {
+    display: flex;
+  }
+
+  .ssh-modal__box {
+    background: var(--cyber-panel);
+    border: 1px solid var(--cyber-orange-dim);
+    width: 100%;
+    max-width: 580px;
+    position: relative;
+  }
+
+  .ssh-modal__box::before {
+    content: "";
+    position: absolute;
+    top: -1px; left: -1px;
+    width: 12px; height: 12px;
+    border-top: 2px solid var(--cyber-orange);
+    border-left: 2px solid var(--cyber-orange);
+  }
+
+  .ssh-modal__box::after {
+    content: "";
+    position: absolute;
+    bottom: -1px; right: -1px;
+    width: 12px; height: 12px;
+    border-bottom: 2px solid var(--cyber-orange);
+    border-right: 2px solid var(--cyber-orange);
+  }
+
+  .ssh-modal__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background: rgba(232, 130, 10, 0.04);
+    border-bottom: 1px solid var(--cyber-orange-dim);
+    position: relative;
+  }
+
+  .ssh-modal__header::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--scanlines);
+    pointer-events: none;
+  }
+
+  .ssh-modal__title {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: var(--cyber-orange);
+    letter-spacing: 0.08em;
+  }
+
+  .ssh-modal__close {
+    background: none;
+    border: none;
+    color: var(--cyber-text-dim);
+    font-size: 0.9rem;
+    cursor: pointer;
+    padding: 0 2px;
+    line-height: 1;
+    transition: color 0.15s;
+  }
+
+  .ssh-modal__close:hover {
+    color: var(--cyber-orange);
+  }
+
+  .ssh-modal__body {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .ssh-modal__hint {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--cyber-text-dim);
+    margin: 0;
+  }
+
+  .ssh-modal__hint code {
+    color: var(--cyber-orange);
+  }
+
+  .ssh-modal__key {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--cyber-text-bright);
+    background: var(--cyber-bg);
+    border: 1px solid rgba(232, 130, 10, 0.2);
+    padding: 10px 12px;
+    margin: 0;
+    word-break: break-all;
+    white-space: pre-wrap;
+    line-height: 1.6;
+  }
+
+  .ssh-modal__copy {
+    align-self: flex-start;
+    background: none;
+    border: 1px solid var(--cyber-orange-dim);
+    color: var(--cyber-orange);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    padding: 6px 16px;
+    cursor: pointer;
+    transition: background 0.15s, box-shadow 0.15s;
+  }
+
+  .ssh-modal__copy:hover {
+    background: rgba(232, 130, 10, 0.08);
+    box-shadow: 0 0 8px rgba(232, 130, 10, 0.2);
   }
 </style>

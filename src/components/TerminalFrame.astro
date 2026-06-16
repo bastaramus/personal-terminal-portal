@@ -57,6 +57,16 @@ const { title, class: className = "", headerRight } = Astro.props;
     background: rgba(232, 130, 10, 0.04);
     border-bottom: 1px solid var(--cyber-orange-dim);
     gap: 8px;
+    position: relative;
+  }
+
+  .terminal-frame__header::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--scanlines);
+    pointer-events: none;
+    z-index: 1;
   }
 
   .terminal-frame__title {

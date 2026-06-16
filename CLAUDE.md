@@ -223,6 +223,25 @@ When asked to work with Figma:
 
 ---
 
+## Email obfuscation
+
+Email addresses must never appear in rendered HTML or source code. The pattern used:
+
+1. At build time (Astro frontmatter), encode with `Buffer.from(email).toString("base64")`.
+2. Pass the encoded value as a `data-e` attribute on a placeholder element with no text content.
+3. A small inline `<script>` on the same component/page decodes with `atob(el.dataset.e)` and
+   sets `el.textContent` (and `el.href` for `mailto:` links) at runtime.
+
+Affected locations:
+- `src/components/ContactPanel.astro` — `hi@xomenko.com` mailto link
+- `src/components/HeroProfile.astro` — decorative `root@xomenko.com` prompt text
+- `src/pages/index.astro` — `root@xomenko.com` in footer
+
+**Do not add email strings to HTML attributes, text nodes, or JS strings in any `.astro` or
+`.ts` file that gets included in the static output.** Always go through this encode/decode pattern.
+
+---
+
 ## Claude behavior for this project
 
 - When the task involves UI: verify in the browser — don't rely on type-checking alone.

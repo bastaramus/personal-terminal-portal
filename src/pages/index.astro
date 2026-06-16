@@ -18,6 +18,8 @@ import { projects } from "@/data/projects";
 const posts = (await getCollection("blog", ({ data }) => !data.draft))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
   .slice(0, 4);
+
+const footerEmailEncoded = Buffer.from("root@xomenko.com").toString("base64");
 ---
 
 <BaseLayout>
@@ -130,7 +132,7 @@ const posts = (await getCollection("blog", ({ data }) => !data.draft))
     </section>
 
     <footer class="portal__footer">
-      <span>root@xomenko.com</span>
+      <span data-e={footerEmailEncoded}></span>
       <span class="portal__footer-sep">|</span>
       <span>built with astro + love for the terminal</span>
       <span class="portal__footer-sep">|</span>
@@ -138,6 +140,12 @@ const posts = (await getCollection("blog", ({ data }) => !data.draft))
     </footer>
   </main>
 </BaseLayout>
+
+<script>
+  document.querySelectorAll<HTMLElement>('footer [data-e], .portal__footer [data-e]').forEach((el) => {
+    el.textContent = atob(el.dataset.e!);
+  });
+</script>
 
 <style>
   .portal {

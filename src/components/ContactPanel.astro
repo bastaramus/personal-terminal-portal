@@ -1,18 +1,42 @@
 ---
 import { profile } from "@/data/profile";
+
+const socials = profile.socials.map((s) => ({
+  ...s,
+  encoded: s.href.startsWith("mailto:")
+    ? Buffer.from(s.value).toString("base64")
+    : null,
+}));
 ---
 
 <div class="contact-panel">
   {
-    profile.socials.map((s) => (
-      <a href={s.href} class="contact-panel__row" target="_blank" rel="noopener">
-        <span class="contact-panel__platform">{s.label}</span>
-        <span class="contact-panel__arrow">-&gt;</span>
-        <span class="contact-panel__value">{s.value}</span>
-      </a>
-    ))
+    socials.map((s) =>
+      s.encoded ? (
+        <a href="#" class="contact-panel__row" data-e={s.encoded}>
+          <span class="contact-panel__platform">{s.label}</span>
+          <span class="contact-panel__arrow">-&gt;</span>
+          <span class="contact-panel__value" data-email-text></span>
+        </a>
+      ) : (
+        <a href={s.href} class="contact-panel__row" target="_blank" rel="noopener">
+          <span class="contact-panel__platform">{s.label}</span>
+          <span class="contact-panel__arrow">-&gt;</span>
+          <span class="contact-panel__value">{s.value}</span>
+        </a>
+      )
+    )
   }
 </div>
+
+<script>
+  document.querySelectorAll<HTMLAnchorElement>('.contact-panel__row[data-e]').forEach((el) => {
+    const email = atob(el.dataset.e!);
+    el.href = 'mailto:' + email;
+    const text = el.querySelector('[data-email-text]');
+    if (text) text.textContent = email;
+  });
+</script>
 
 <style>
   .contact-panel {

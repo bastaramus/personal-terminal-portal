@@ -27,6 +27,13 @@
   --cyber-text-dim: #6b6b6b;
   --cyber-text-bright: #f5f5f5;
   --cyber-grid: rgba(232, 130, 10, 0.03);
+  --scanlines: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.18) 2px,
+    rgba(0, 0, 0, 0.18) 4px
+  );
 }
 
 *,
@@ -51,7 +58,7 @@ body {
   font-family: var(--font-mono);
 }
 
-/* CRT scanlines overlay */
+/* CRT scanlines overlay — sits below all content (z-index: 0 < .portal z-index: 1) */
 body::before {
   content: "";
   position: fixed;
@@ -64,7 +71,7 @@ body::before {
     rgba(0, 0, 0, 0.12) 4px
   );
   pointer-events: none;
-  z-index: 9999;
+  z-index: 0;
 }
 
 /* Grid texture */
@@ -86,6 +93,19 @@ h1, h2, h3, h4 {
   line-height: 1.2;
   color: var(--cyber-text-bright);
   margin: 0;
+}
+
+/* Scanlines on headings (h2–h4). h1 handled per-component to avoid conflicts. */
+h2, h3, h4 {
+  position: relative;
+}
+h2::after, h3::after, h4::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--scanlines);
+  pointer-events: none;
+  z-index: 1;
 }
 
 a {

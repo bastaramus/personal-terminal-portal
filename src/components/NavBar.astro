@@ -60,6 +60,15 @@ const currentPath = Astro.url.pathname;
     backdrop-filter: blur(8px);
   }
 
+  .navbar::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--scanlines);
+    pointer-events: none;
+    z-index: 1;
+  }
+
   .navbar__inner {
     max-width: 1400px;
     margin: 0 auto;
