@@ -8,6 +8,7 @@ export const profile = {
   focus: "AWS / Hybrid Infra / Kubernetes / IaC",
   socials: [
     { label: "LinkedIn", value: "linkedin.com/in/dmytro-khomenko", href: "https://www.linkedin.com/in/dmytro-khomenko-9221031a4" },
+    { label: "Telegram", value: "@khomenko_dmytro", href: "https://t.me/khomenko_dmytro" },
     { label: "Email", value: "mail@xomenko.com", href: "mailto:mail@xomenko.com" },
   ],
 };
