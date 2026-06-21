@@ -1,0 +1,346 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import NavBar from "@/components/NavBar.astro";
+import TerminalFrame from "@/components/TerminalFrame.astro";
+import { getCollection, getEntry } from "astro:content";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("blog", ({ data }) => !data.draft);
+  return posts.map((post) => ({ params: { slug: post.slug } }));
+}
+
+const { slug } = Astro.params;
+const post = await getEntry("blog", slug);
+if (!post) return Astro.redirect("/blog");
+
+const { Content } = await post.render();
+
+const dateStr = post.data.pubDate.toLocaleDateString("en-US", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
+
+const allPosts = (await getCollection("blog", ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const currentIdx = allPosts.findIndex((p) => p.slug === slug);
+const prev = allPosts[currentIdx + 1];
+const next = allPosts[currentIdx - 1];
+---
+
+<BaseLayout title={`${post.data.title} — Dmytro Khomenko`} description={post.data.description}>
+  <NavBar />
+  <main class="post-page">
+
+    <div class="post-page__back">
+      <a href="/blog" class="post-page__back-link">← BACK TO BLOG</a>
+    </div>
+
+    <article class="post-page__article">
+
+      <header class="post-page__header">
+        <div class="post-page__meta">
+          <span class="post-page__date">{dateStr}</span>
+          <span class="post-page__sep">·</span>
+          <div class="post-page__tags">
+            {post.data.tags.map((tag) => (
+              <a href={`/tags/${tag}`} class="post-page__tag">#{tag}</a>
+            ))}
+          </div>
+        </div>
+        <h1 class="post-page__title">{post.data.title}</h1>
+        <p class="post-page__desc">{post.data.description}</p>
+      </header>
+
+      <TerminalFrame title={`// ${post.data.tags[0]?.toUpperCase() ?? "POST"}.LOG`}>
+        <div class="post-content">
+          <Content />
+        </div>
+      </TerminalFrame>
+
+    </article>
+
+    {(prev || next) && (
+      <nav class="post-page__nav">
+        <div class="post-page__nav-inner">
+          {prev ? (
+            <a href={`/blog/${prev.slug}`} class="post-page__nav-link post-page__nav-link--prev">
+              <span class="post-page__nav-dir">← PREV</span>
+              <span class="post-page__nav-title">{prev.data.title}</span>
+            </a>
+          ) : <div />}
+          {next ? (
+            <a href={`/blog/${next.slug}`} class="post-page__nav-link post-page__nav-link--next">
+              <span class="post-page__nav-dir">NEXT →</span>
+              <span class="post-page__nav-title">{next.data.title}</span>
+            </a>
+          ) : <div />}
+        </div>
+      </nav>
+    )}
+
+  </main>
+</BaseLayout>
+
+<style>
+  .post-page {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 32px 24px 80px;
+  }
+
+  .post-page__back {
+    margin-bottom: 28px;
+  }
+
+  .post-page__back-link {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    color: var(--cyber-text-dim);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+
+  .post-page__back-link:hover {
+    color: var(--cyber-orange);
+  }
+
+  .post-page__header {
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid rgba(232, 130, 10, 0.15);
+  }
+
+  .post-page__meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+
+  .post-page__date {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--cyber-text-dim);
+    letter-spacing: 0.06em;
+  }
+
+  .post-page__sep {
+    color: var(--cyber-text-dim);
+    font-size: 0.65rem;
+  }
+
+  .post-page__tags {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+
+  .post-page__tag {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.06em;
+    color: var(--cyber-orange);
+    background: rgba(232, 130, 10, 0.06);
+    border: 1px solid rgba(232, 130, 10, 0.25);
+    padding: 1px 6px;
+    text-decoration: none;
+    transition: background 0.15s;
+  }
+
+  .post-page__tag:hover {
+    background: rgba(232, 130, 10, 0.12);
+  }
+
+  .post-page__title {
+    font-family: var(--font-sans);
+    font-size: clamp(1.5rem, 3vw, 2.2rem);
+    font-weight: 900;
+    color: var(--cyber-text-bright);
+    line-height: 1.2;
+    letter-spacing: 0.02em;
+    margin: 0 0 12px;
+  }
+
+  .post-page__desc {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--cyber-text-dim);
+    line-height: 1.7;
+    margin: 0;
+    border-left: 2px solid rgba(232, 130, 10, 0.3);
+    padding-left: 12px;
+  }
+
+  /* Prose content */
+  .post-content {
+    font-size: 0.9rem;
+    line-height: 1.85;
+    color: var(--cyber-text);
+  }
+
+  .post-content :global(h2) {
+    font-family: var(--font-sans);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--cyber-orange);
+    margin: 2em 0 0.75em;
+    letter-spacing: 0.04em;
+  }
+
+  .post-content :global(h3) {
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--cyber-text-bright);
+    margin: 1.5em 0 0.5em;
+  }
+
+  .post-content :global(p) {
+    margin: 0 0 1.2em;
+  }
+
+  .post-content :global(a) {
+    color: var(--cyber-orange);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .post-content :global(code) {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    color: var(--cyber-orange);
+    background: rgba(232, 130, 10, 0.08);
+    border: 1px solid rgba(232, 130, 10, 0.2);
+    padding: 1px 5px;
+  }
+
+  .post-content :global(pre) {
+    background: var(--cyber-bg);
+    border: 1px solid rgba(232, 130, 10, 0.2);
+    border-left: 3px solid var(--cyber-orange);
+    padding: 16px;
+    overflow-x: auto;
+    margin: 1.5em 0;
+    font-size: 0.82rem;
+    line-height: 1.6;
+  }
+
+  .post-content :global(pre code) {
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--cyber-text);
+    font-size: 1em;
+  }
+
+  .post-content :global(ul),
+  .post-content :global(ol) {
+    padding-left: 1.5em;
+    margin: 0 0 1.2em;
+  }
+
+  .post-content :global(li) {
+    margin-bottom: 0.4em;
+  }
+
+  .post-content :global(blockquote) {
+    border-left: 3px solid var(--cyber-orange);
+    margin: 1.5em 0;
+    padding: 8px 16px;
+    background: rgba(232, 130, 10, 0.04);
+    color: var(--cyber-text-dim);
+    font-style: italic;
+  }
+
+  .post-content :global(hr) {
+    border: none;
+    border-top: 1px solid rgba(232, 130, 10, 0.2);
+    margin: 2em 0;
+  }
+
+  .post-content :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+    margin: 1.5em 0;
+  }
+
+  .post-content :global(th) {
+    text-align: left;
+    color: var(--cyber-orange);
+    border-bottom: 1px solid rgba(232, 130, 10, 0.3);
+    padding: 6px 10px;
+    letter-spacing: 0.06em;
+    font-size: 0.72rem;
+  }
+
+  .post-content :global(td) {
+    border-bottom: 1px solid rgba(232, 130, 10, 0.1);
+    padding: 6px 10px;
+    color: var(--cyber-text);
+  }
+
+  /* Prev/Next navigation */
+  .post-page__nav {
+    margin-top: 48px;
+    border-top: 1px solid rgba(232, 130, 10, 0.15);
+    padding-top: 24px;
+  }
+
+  .post-page__nav-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .post-page__nav-link {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px;
+    border: 1px solid rgba(232, 130, 10, 0.15);
+    text-decoration: none;
+    transition: border-color 0.15s, background 0.15s;
+  }
+
+  .post-page__nav-link:hover {
+    border-color: rgba(232, 130, 10, 0.4);
+    background: rgba(232, 130, 10, 0.03);
+  }
+
+  .post-page__nav-link--next {
+    text-align: right;
+  }
+
+  .post-page__nav-dir {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    color: var(--cyber-orange);
+  }
+
+  .post-page__nav-title {
+    font-family: var(--font-sans);
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--cyber-text-dim);
+    line-height: 1.4;
+  }
+
+  .post-page__nav-link:hover .post-page__nav-title {
+    color: var(--cyber-text-bright);
+  }
+
+  @media (max-width: 640px) {
+    .post-page {
+      padding: 24px 16px 60px;
+    }
+    .post-page__nav-inner {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

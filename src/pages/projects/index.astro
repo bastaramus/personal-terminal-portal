@@ -1,0 +1,249 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import NavBar from "@/components/NavBar.astro";
+import TerminalFrame from "@/components/TerminalFrame.astro";
+import ProjectCard from "@/components/ProjectCard.astro";
+import { projects } from "@/data/projects";
+
+const statusOrder = { ACTIVE: 0, BETA: 1, MAINTAINED: 2, ARCHIVED: 3 };
+const sorted = [...projects].sort((a, b) => statusOrder[a.status] - statusOrder[b.status]);
+
+const statusCounts = projects.reduce<Record<string, number>>((acc, p) => {
+  acc[p.status] = (acc[p.status] ?? 0) + 1;
+  return acc;
+}, {});
+
+const allTags = [...new Set(projects.flatMap((p) => p.tags))].sort();
+---
+
+<BaseLayout title="Projects — Dmytro Khomenko" description="Open-source DevOps tooling: Terraform modules, Kubernetes bootstraps, Ansible playbooks, and observability stacks.">
+  <NavBar />
+  <main class="projects-page">
+
+    <section class="projects-page__header">
+      <div class="projects-page__header-inner">
+        <div class="projects-page__prompt">
+          <span class="projects-page__prompt-path">~/projects</span>
+          <span class="projects-page__prompt-sep">$</span>
+          <span class="projects-page__prompt-cmd">git log --oneline --all</span>
+          <span class="blink projects-page__cursor">▌</span>
+        </div>
+        <h1 class="projects-page__title">OPEN SOURCE</h1>
+        <p class="projects-page__subtitle">Infrastructure tooling, platform bootstraps, and automation utilities.</p>
+      </div>
+    </section>
+
+    <div class="projects-page__body">
+
+      <aside class="projects-page__sidebar">
+        <TerminalFrame title="// STATUS">
+          <div class="status-list">
+            {Object.entries(statusCounts).sort((a, b) => statusOrder[a[0] as keyof typeof statusOrder] - statusOrder[b[0] as keyof typeof statusOrder]).map(([status, count]) => (
+              <div class="status-list__row">
+                <span class={`status-list__dot status-list__dot--${status.toLowerCase()}`}></span>
+                <span class="status-list__label">{status}</span>
+                <span class="status-list__count">{count}</span>
+              </div>
+            ))}
+          </div>
+        </TerminalFrame>
+
+        <TerminalFrame title="// STACK">
+          <div class="stack-list">
+            {allTags.map((tag) => (
+              <span class="stack-list__tag">{tag}</span>
+            ))}
+          </div>
+        </TerminalFrame>
+
+        <TerminalFrame title="// STATS">
+          <div class="sidebar-stats">
+            <div class="sidebar-stats__row">
+              <span class="sidebar-stats__label">TOTAL</span>
+              <span class="sidebar-stats__value">{projects.length}</span>
+            </div>
+            <div class="sidebar-stats__row">
+              <span class="sidebar-stats__label">STARS</span>
+              <span class="sidebar-stats__value">{projects.reduce((s, p) => s + (p.stars ?? 0), 0).toLocaleString()}</span>
+            </div>
+            <div class="sidebar-stats__row">
+              <span class="sidebar-stats__label">FORKS</span>
+              <span class="sidebar-stats__value">{projects.reduce((s, p) => s + (p.forks ?? 0), 0).toLocaleString()}</span>
+            </div>
+          </div>
+        </TerminalFrame>
+      </aside>
+
+      <section class="projects-page__grid-wrap">
+        <TerminalFrame title="// PROJECTS.DB" headerRight={`${projects.length} REPOS`}>
+          <div class="projects-grid">
+            {sorted.map((project) => (
+              <ProjectCard project={project} />
+            ))}
+          </div>
+        </TerminalFrame>
+      </section>
+
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .projects-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  .projects-page__header {
+    border-bottom: 1px solid rgba(232, 130, 10, 0.15);
+    margin-bottom: 40px;
+    padding-bottom: 32px;
+  }
+
+  .projects-page__header-inner {
+    max-width: 700px;
+  }
+
+  .projects-page__prompt {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    margin-bottom: 16px;
+  }
+
+  .projects-page__prompt-path { color: var(--cyber-orange); }
+  .projects-page__prompt-sep  { color: var(--cyber-text-dim); }
+  .projects-page__prompt-cmd  { color: var(--cyber-text); }
+  .projects-page__cursor      { color: var(--cyber-orange); }
+
+  .projects-page__title {
+    font-family: var(--font-sans);
+    font-size: clamp(1.8rem, 3vw, 2.6rem);
+    font-weight: 900;
+    color: var(--cyber-text-bright);
+    letter-spacing: 0.1em;
+    margin: 0 0 8px;
+  }
+
+  .projects-page__subtitle {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: var(--cyber-text-dim);
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  .projects-page__body {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+
+  .projects-page__sidebar {
+    position: sticky;
+    top: 72px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  /* Status list */
+  .status-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .status-list__row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+  }
+
+  .status-list__dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .status-list__dot--active    { background: var(--cyber-green); box-shadow: 0 0 4px var(--cyber-green); }
+  .status-list__dot--beta      { background: var(--cyber-orange); box-shadow: 0 0 4px var(--cyber-orange); }
+  .status-list__dot--maintained { background: var(--cyber-orange); opacity: 0.6; }
+  .status-list__dot--archived  { background: var(--cyber-text-dim); }
+
+  .status-list__label { color: var(--cyber-text-dim); flex: 1; }
+  .status-list__count { color: var(--cyber-orange); }
+
+  /* Stack tags */
+  .stack-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .stack-list__tag {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.06em;
+    color: var(--cyber-text-dim);
+    border: 1px solid rgba(232, 130, 10, 0.2);
+    padding: 2px 6px;
+  }
+
+  /* Sidebar stats */
+  .sidebar-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .sidebar-stats__row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+  }
+
+  .sidebar-stats__label { color: var(--cyber-text-dim); letter-spacing: 0.06em; }
+  .sidebar-stats__value { color: var(--cyber-orange); }
+
+  /* Projects grid */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+  }
+
+  @media (max-width: 900px) {
+    .projects-page__body {
+      grid-template-columns: 1fr;
+    }
+    .projects-page__sidebar {
+      position: static;
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
+    .projects-page__sidebar > * {
+      flex: 1;
+      min-width: 160px;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .projects-page {
+      padding: 24px 16px 60px;
+    }
+    .projects-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,27 +1,125 @@
 ---
 import { experience } from "@/data/profile";
+
+const primary = experience.slice(0, 3);   // Corsair, Checkmarx, DevelopEx DevOps
+const earlier = experience.slice(3);       // Head of IT, CYFRA, UKR.NET
 ---
 
 <div class="cv-timeline">
   {
-    experience.map((item, i) => (
+    primary.map((item, i) => (
       <div class="cv-timeline__item">
         <div class="cv-timeline__marker">
-          <span class="cv-timeline__dot" />
-          {i < experience.length - 1 && <span class="cv-timeline__line" />}
+          <span class={`cv-timeline__dot${item.current ? " cv-timeline__dot--active" : ""}`} />
+          <span class="cv-timeline__line" />
         </div>
         <div class="cv-timeline__content">
           <div class="cv-timeline__header">
-            <span class="cv-timeline__role">{item.role}</span>
+            <div class="cv-timeline__header-left">
+              <span class="cv-timeline__role">{item.role}</span>
+              <span class="cv-timeline__type">{item.type}</span>
+              {item.current && (
+                <span class="cv-timeline__active">
+                  <span class="cv-timeline__active-dot blink" />
+                  ACTIVE
+                </span>
+              )}
+            </div>
             <span class="cv-timeline__period">{item.period}</span>
           </div>
-          <div class="cv-timeline__company">{item.company}</div>
-          <p class="cv-timeline__desc">{item.desc}</p>
+          <div class="cv-timeline__company">@ {item.company}</div>
+          <div class="cv-timeline__stack">
+            {item.stack.map((s) => (
+              <span class="cv-timeline__tag">{s}</span>
+            ))}
+          </div>
+          <ul class="cv-timeline__list">
+            {item.achievements.map((a) => (
+              <li class="cv-timeline__list-item">
+                <span class="cv-timeline__bullet">▸</span>
+                <span class="cv-timeline__list-text">{a}</span>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     ))
   }
+
+  <!-- Earlier experience toggle -->
+  <div class="cv-timeline__item cv-timeline__item--toggle">
+    <div class="cv-timeline__marker">
+      <span class="cv-timeline__dot" />
+      <span class="cv-timeline__line cv-timeline__line--hidden" id="earlier-line" />
+    </div>
+    <div class="cv-timeline__content">
+      <button class="cv-earlier__btn" id="earlier-toggle" aria-expanded="false">
+        <span class="cv-earlier__label" id="earlier-label">▼ EARLIER EXPERIENCE</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Collapsed earlier entries -->
+  <div class="cv-earlier__entries" id="earlier-entries" aria-hidden="true">
+    {
+      earlier.map((item, i) => (
+        <div class="cv-timeline__item">
+          <div class="cv-timeline__marker">
+            <span class="cv-timeline__dot" />
+            {i < earlier.length - 1 && <span class="cv-timeline__line" />}
+          </div>
+          <div class="cv-timeline__content">
+            <div class="cv-timeline__header">
+              <div class="cv-timeline__header-left">
+                <span class="cv-timeline__role">{item.role}</span>
+                <span class="cv-timeline__type">{item.type}</span>
+              </div>
+              <span class="cv-timeline__period">{item.period}</span>
+            </div>
+            <div class="cv-timeline__company">@ {item.company}</div>
+            <div class="cv-timeline__stack">
+              {item.stack.map((s) => (
+                <span class="cv-timeline__tag">{s}</span>
+              ))}
+            </div>
+            <ul class="cv-timeline__list">
+              {item.achievements.map((a) => (
+                <li class="cv-timeline__list-item">
+                  <span class="cv-timeline__bullet">▸</span>
+                  <span class="cv-timeline__list-text">{a}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      ))
+    }
+  </div>
 </div>
+
+<script>
+  const btn = document.getElementById('earlier-toggle')!;
+  const entries = document.getElementById('earlier-entries')!;
+  const label = document.getElementById('earlier-label')!;
+  const line = document.getElementById('earlier-line')!;
+
+  btn.addEventListener('click', () => {
+    const expanded = btn.getAttribute('aria-expanded') === 'true';
+    if (expanded) {
+      entries.setAttribute('aria-hidden', 'true');
+      entries.classList.remove('cv-earlier__entries--open');
+      btn.setAttribute('aria-expanded', 'false');
+      label.textContent = '▼ EARLIER EXPERIENCE';
+      line.classList.add('cv-timeline__line--hidden');
+    } else {
+      entries.setAttribute('aria-hidden', 'false');
+      entries.classList.add('cv-earlier__entries--open');
+      btn.setAttribute('aria-expanded', 'true');
+      label.textContent = '▲ COLLAPSE';
+      line.classList.remove('cv-timeline__line--hidden');
+    }
+  });
+</script>
 
 <style>
   .cv-timeline {
@@ -40,17 +138,22 @@ import { experience } from "@/data/profile";
     flex-direction: column;
     align-items: center;
     flex-shrink: 0;
-    padding-top: 3px;
+    padding-top: 4px;
   }
 
   .cv-timeline__dot {
     width: 7px;
     height: 7px;
     border-radius: 50%;
-    background: var(--cyber-orange);
-    border: 1px solid var(--cyber-orange);
-    box-shadow: 0 0 6px rgba(232, 130, 10, 0.4);
+    background: rgba(232, 130, 10, 0.4);
+    border: 1px solid rgba(232, 130, 10, 0.5);
     flex-shrink: 0;
+  }
+
+  .cv-timeline__dot--active {
+    background: var(--cyber-orange);
+    border-color: var(--cyber-orange);
+    box-shadow: 0 0 8px rgba(232, 130, 10, 0.6);
   }
 
   .cv-timeline__line {
@@ -58,50 +161,160 @@ import { experience } from "@/data/profile";
     flex: 1;
     background: rgba(232, 130, 10, 0.2);
     margin-top: 4px;
-    margin-bottom: 0;
     min-height: 16px;
   }
 
+  .cv-timeline__line--hidden {
+    background: transparent;
+  }
+
   .cv-timeline__content {
-    padding-bottom: 16px;
+    padding-bottom: 20px;
     flex: 1;
+    min-width: 0;
   }
 
   .cv-timeline__header {
     display: flex;
+    align-items: baseline;
     justify-content: space-between;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 2px;
+  }
+
+  .cv-timeline__header-left {
+    display: flex;
     align-items: baseline;
     gap: 8px;
-    margin-bottom: 2px;
     flex-wrap: wrap;
   }
 
   .cv-timeline__role {
-    font-family: var(--font-mono);
-    font-size: 0.875rem;
-    font-weight: 500;
+    font-family: var(--font-sans);
+    font-size: 0.82rem;
+    font-weight: 600;
     color: var(--cyber-text-bright);
+    letter-spacing: 0.02em;
   }
 
   .cv-timeline__period {
     font-family: var(--font-mono);
-    font-size: 0.73rem;
+    font-size: 0.68rem;
+    color: var(--cyber-orange);
+    letter-spacing: 0.08em;
+  }
+
+  .cv-timeline__type {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
     color: var(--cyber-text-dim);
-    flex-shrink: 0;
+    letter-spacing: 0.08em;
+    border: 1px solid rgba(109, 109, 109, 0.3);
+    padding: 1px 6px;
+    background: rgba(109, 109, 109, 0.06);
+  }
+
+  .cv-timeline__active {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-family: var(--font-mono);
+    font-size: 0.58rem;
+    color: var(--cyber-green);
+    letter-spacing: 0.1em;
+  }
+
+  .cv-timeline__active-dot {
+    display: inline-block;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--cyber-green);
+    box-shadow: 0 0 5px var(--cyber-green);
   }
 
   .cv-timeline__company {
     font-family: var(--font-mono);
-    font-size: 0.95rem;
+    font-size: 0.72rem;
     color: var(--cyber-orange);
-    margin-bottom: 6px;
+    letter-spacing: 0.04em;
+    margin-bottom: 8px;
+  }
+
+  .cv-timeline__stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: 8px;
+  }
+
+  .cv-timeline__tag {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--cyber-text);
+    border: 1px solid rgba(232, 130, 10, 0.3);
+    background: rgba(232, 130, 10, 0.06);
+    padding: 2px 7px;
     letter-spacing: 0.04em;
   }
 
-  .cv-timeline__desc {
-    font-size: 0.82rem;
-    color: var(--cyber-text-dim);
-    line-height: 1.65;
+  .cv-timeline__list {
+    list-style: none;
     margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .cv-timeline__list-item {
+    display: flex;
+    gap: 6px;
+    align-items: flex-start;
+  }
+
+  .cv-timeline__bullet {
+    color: var(--cyber-orange);
+    font-size: 0.6rem;
+    flex-shrink: 0;
+    margin-top: 3px;
+    opacity: 0.7;
+  }
+
+  .cv-timeline__list-text {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--cyber-text);
+    line-height: 1.65;
+  }
+
+  /* Earlier toggle button */
+  .cv-earlier__btn {
+    background: none;
+    border: 1px solid rgba(232, 130, 10, 0.3);
+    color: var(--cyber-orange);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    padding: 4px 14px;
+    cursor: pointer;
+    transition: background 0.15s, box-shadow 0.15s;
+  }
+
+  .cv-earlier__btn:hover {
+    background: rgba(232, 130, 10, 0.07);
+    box-shadow: 0 0 8px rgba(232, 130, 10, 0.15);
+  }
+
+  /* Collapsed entries */
+  .cv-earlier__entries {
+    display: none;
+    flex-direction: column;
+  }
+
+  .cv-earlier__entries--open {
+    display: flex;
   }
 </style>

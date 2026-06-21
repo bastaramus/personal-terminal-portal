@@ -57,7 +57,7 @@ const promptUserEncoded = Buffer.from("root@xomenko.com").toString("base64");
           <button class="ssh-modal__close" id="tg-qr-modal-close" aria-label="Close">✕</button>
         </div>
         <div class="ssh-modal__body tg-qr-body">
-          <p class="ssh-modal__hint">Scan to open <code>@khomenko_dmytro</code> on Telegram</p>
+          <p class="ssh-modal__hint">Scan to open <a href="https://t.me/khomenko_dmytro" target="_blank" rel="noopener" class="tg-qr__handle">@khomenko_dmytro</a> on Telegram</p>
           <img src="/tg-qr.png" alt="Telegram QR code" class="tg-qr__img" />
         </div>
       </div>
@@ -725,6 +725,12 @@ const promptUserEncoded = Buffer.from("root@xomenko.com").toString("base64");
   .ssh-modal__copy:hover {
     background: rgba(232, 130, 10, 0.08);
     box-shadow: 0 0 8px rgba(232, 130, 10, 0.2);
+  }
+
+  .tg-qr__handle {
+    color: var(--cyber-orange);
+    text-decoration: underline;
+    text-underline-offset: 2px;
   }
 
   .tg-qr-body {
