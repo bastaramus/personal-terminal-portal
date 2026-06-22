@@ -1,5 +1,6 @@
 ---
 import { experience } from "@/data/profile";
+import SkillTag from "@/components/SkillTag.astro";
 
 const primary = experience.slice(0, 3);   // Corsair, Checkmarx, DevelopEx DevOps
 const earlier = experience.slice(3);       // Head of IT, CYFRA, UKR.NET
@@ -30,7 +31,7 @@ const earlier = experience.slice(3);       // Head of IT, CYFRA, UKR.NET
           <div class="cv-timeline__company">@ {item.company}</div>
           <div class="cv-timeline__stack">
             {item.stack.map((s) => (
-              <span class="cv-timeline__tag">{s}</span>
+              <SkillTag tag={s} />
             ))}
           </div>
           <ul class="cv-timeline__list">
@@ -249,18 +250,7 @@ const earlier = experience.slice(3);       // Head of IT, CYFRA, UKR.NET
     margin-bottom: 8px;
   }
 
-  .cv-timeline__tag {
-    display: inline-block;
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
-    color: var(--cyber-text);
-    border: 1px solid rgba(232, 130, 10, 0.3);
-    background: rgba(232, 130, 10, 0.06);
-    padding: 2px 7px;
-    letter-spacing: 0.04em;
-  }
-
-  .cv-timeline__list {
+.cv-timeline__list {
     list-style: none;
     margin: 0;
     padding: 0;

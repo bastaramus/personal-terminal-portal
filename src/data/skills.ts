@@ -1,15 +1,75 @@
 export const skillCategories: { label: string; skills: string[] }[] = [
-  { label: "CLOUD", skills: ["AWS", "EC2", "EKS", "RDS", "S3", "VPC", "IAM", "CloudWatch"] },
-  { label: "VIRTUALISATION", skills: ["VMware vSphere", "ESXi", "vCenter", "NSX", "Packer"] },
-  { label: "IaC & CONFIG", skills: ["Terraform", "Atlantis", "Ansible", "Pulumi", "CloudFormation"] },
-  { label: "CONTAINERS", skills: ["Kubernetes", "Docker", "Helm", "ArgoCD", "containerd"] },
-  { label: "CI/CD", skills: ["GitHub Actions", "GitLab CI", "Jenkins", "TeamCity"] },
-  { label: "OBSERVABILITY", skills: ["Prometheus", "Grafana", "Loki", "Jaeger", "OpenTelemetry"] },
-  { label: "SCRIPTING", skills: ["Bash", "Python", "Go"] },
-];
-
-export const certifications = [
-  { label: "AWS Solutions Architect Pro", year: "2023" },
-  { label: "CKA — Certified Kubernetes Admin", year: "2022" },
-  { label: "AWS DevOps Engineer Pro", year: "2021" },
+  {
+    label: "LEADERSHIP",
+    skills: [
+      "Team Leadership", "Mentoring", "DevOps Strategy", "Platform Architecture",
+      "Cross-team Collaboration", "Roadmap Planning", "SDLC Improvement", "Process Design",
+    ],
+  },
+  {
+    label: "KUBERNETES & CONTAINERS",
+    skills: [
+      "Kubernetes", "Docker", "AWS EKS", "Helm", "ArgoCD", "GitOps",
+      "Karpenter", "KEDA",
+    ],
+  },
+  {
+    label: "CLOUD & INFRASTRUCTURE",
+    skills: [
+      "AWS", "VMware vSphere", "Hybrid Cloud", "Akamai", "Bare-metal",
+      "Linux", "Windows Server", "Cloud Governance", "Cost Optimization", "Capacity Planning",
+    ],
+  },
+  {
+    label: "IaC & CONFIG",
+    skills: [
+      "Terraform", "Ansible", "Packer", "CloudFormation",
+      "Golden Images",
+    ],
+  },
+  {
+    label: "CI/CD",
+    skills: [
+      "Jenkins", "GitHub Actions", "GitLab CI/CD", "CircleCI",
+      "Azure DevOps", "JFrog Artifactory", "Nexus", "Deployment Automation",
+    ],
+  },
+  {
+    label: "OBSERVABILITY",
+    skills: [
+      "Prometheus", "Grafana", "Alertmanager", "ELK Stack",
+      "New Relic", "PagerDuty", "Loki", "OpenTelemetry",
+      "Incident Management", "Disaster Recovery",
+    ],
+  },
+  {
+    label: "DEVSECOPS",
+    skills: [
+      "HashiCorp Vault", "Trivy",
+      "Checkmarx One", "SonarQube", "Falco", "Dependabot",
+      "Secrets Management", "Container Security", "Supply Chain Security",
+    ],
+  },
+  {
+    label: "PROGRAMMING",
+    skills: [
+      "Python", "Bash", "PowerShell", "Groovy",
+      "Flask", "boto3", "pyVmomi", "AWS Lambda",
+      "Serverless Framework", "Locust",
+    ],
+  },
+  {
+    label: "AI & AUTOMATION",
+    skills: [
+      "AWS Bedrock", "LangGraph", "Claude Code", "Augment Code",
+      "AI Agents", "Agent Orchestration",
+    ],
+  },
+  {
+    label: "ADDITIONAL",
+    skills: [
+      "Networking", "System Administration", "Database Operations",
+      "Load & Stress Testing", "Mobile CI/CD (iOS/Android)",
+    ],
+  },
 ];

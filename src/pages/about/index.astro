@@ -4,12 +4,21 @@ import NavBar from "@/components/NavBar.astro";
 import TerminalFrame from "@/components/TerminalFrame.astro";
 import SkillTag from "@/components/SkillTag.astro";
 import CvTimeline from "@/components/CvTimeline.astro";
-import QuotePanel from "@/components/QuotePanel.astro";
-import ContactPanel from "@/components/ContactPanel.astro";
-
+import SiteFooter from "@/components/SiteFooter.astro";
 import { profile, education } from "@/data/profile";
-import { skillCategories, certifications } from "@/data/skills";
+import { skillCategories } from "@/data/skills";
 const promptUserEncoded = Buffer.from("root@xomenko.com").toString("base64");
+
+const contactIcons: Record<string, string> = {
+  LinkedIn: `<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>`,
+  Telegram: `<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>`,
+  Email: `<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>`,
+};
+const contacts = profile.socials.map((s) => ({
+  ...s,
+  icon: contactIcons[s.label] ?? "",
+  encoded: s.href.startsWith("mailto:") ? Buffer.from(s.value).toString("base64") : null,
+}));
 ---
 
 <BaseLayout title="About Me — Dmytro Khomenko" description="DevOps engineer, team lead. AWS cloud, hybrid infrastructure, Kubernetes, Terraform. Based in Kyiv.">
@@ -24,11 +33,17 @@ const promptUserEncoded = Buffer.from("root@xomenko.com").toString("base64");
         <span class="blink about-page__cursor">▌</span>
       </div>
       <h1 class="about-page__title">ABOUT ME</h1>
-      <p class="about-page__subtitle">DevOps Architect</p>
+      <div class="about-page__subtitles">
+        <span>DEVOPS ARCHITECT</span>
+        <span class="about-page__subtitle-sep">/</span>
+        <span>PLATFORM ENGINEER</span>
+        <span class="about-page__subtitle-sep">/</span>
+        <span>TEAM LEAD</span>
+      </div>
     </section>
 
     <!-- About Me — full width -->
-    <div class="about-page__row about-page__row--about">
+    <div class="about-page__row">
       <TerminalFrame title="// ABOUT ME">
         <div class="about-panel__body">
           <div class="about-panel__section-label">SUMMARY</div>
@@ -99,6 +114,7 @@ const promptUserEncoded = Buffer.from("root@xomenko.com").toString("base64");
                       {i < education.length - 1 && <span class="edu-item__line" />}
                     </div>
                     <div class="edu-item__content">
+                      <div class="edu-item__specialization">{item.specialization}</div>
                       <div class="edu-item__header">
                         <span class="edu-item__degree">{item.degree}</span>
                         <span class="edu-item__period">{item.period}</span>
@@ -111,16 +127,40 @@ const promptUserEncoded = Buffer.from("root@xomenko.com").toString("base64");
               </div>
             </div>
           </div>
+
+          <!-- Contact strip -->
+          <div class="about-panel__divider"></div>
+          <div class="about-panel__section-label">CONTACT</div>
+          <div class="about-contact-strip">
+            {contacts.map((s) =>
+              s.encoded ? (
+                <a href="#" class="about-contact-strip__item" data-contact-e={s.encoded}>
+                  <span class="about-contact-strip__icon" set:html={s.icon} />
+                  <span class="about-contact-strip__label">{s.label}</span>
+                  <span class="about-contact-strip__value" data-contact-text></span>
+                </a>
+              ) : (
+                <a href={s.href} class="about-contact-strip__item" target="_blank" rel="noopener">
+                  <span class="about-contact-strip__icon" set:html={s.icon} />
+                  <span class="about-contact-strip__label">{s.label}</span>
+                  <span class="about-contact-strip__value">{s.value}</span>
+                </a>
+              )
+            )}
+          </div>
         </div>
       </TerminalFrame>
     </div>
 
-    <!-- Experience + Skills side by side -->
-    <div class="about-page__row about-page__row--exp-skills">
+    <!-- Experience — full width -->
+    <div class="about-page__row">
       <TerminalFrame title="// EXPERIENCE">
         <CvTimeline />
       </TerminalFrame>
+    </div>
 
+    <!-- Skills — full width -->
+    <div class="about-page__row">
       <TerminalFrame title="// SKILLS">
         <div class="skills-body">
           {skillCategories.map((cat, i) => (
@@ -134,36 +174,23 @@ const promptUserEncoded = Buffer.from("root@xomenko.com").toString("base64");
               {i < skillCategories.length - 1 && <div class="skills-divider" />}
             </div>
           ))}
-          <div class="skills-divider" />
-          <div class="skills-category">
-            <div class="skills-category__label">CERTS</div>
-            <div class="skills-certs">
-              {certifications.map((cert) => (
-                <div class="skills-cert">
-                  <span class="skills-cert__label">{cert.label}</span>
-                  <span class="skills-cert__year">{cert.year}</span>
-                </div>
-              ))}
-            </div>
-          </div>
         </div>
       </TerminalFrame>
     </div>
 
-    <!-- Quote + Contact -->
-    <div class="about-page__row about-page__row--bottom">
-      <TerminalFrame title="// SYSTEM.QUOTE">
-        <QuotePanel />
-      </TerminalFrame>
-      <TerminalFrame title="// CONTACT">
-        <ContactPanel />
-      </TerminalFrame>
-    </div>
+    <SiteFooter />
 
   </main>
 <script>
   document.querySelectorAll<HTMLElement>('.about-page__prompt-user[data-e]').forEach((el) => {
     el.textContent = atob(el.dataset.e!);
+  });
+
+  document.querySelectorAll<HTMLAnchorElement>('.about-contact-strip__item[data-contact-e]').forEach((el) => {
+    const email = atob(el.dataset.contactE!);
+    el.href = 'mailto:' + email;
+    const text = el.querySelector('[data-contact-text]');
+    if (text) text.textContent = email;
   });
 
   const text = document.getElementById('about-text')!;
@@ -225,30 +252,29 @@ const promptUserEncoded = Buffer.from("root@xomenko.com").toString("base64");
     margin: 0 0 6px;
   }
 
-  .about-page__subtitle {
+  .about-page__subtitles {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
     font-family: var(--font-mono);
     font-size: 0.82rem;
-    color: var(--cyber-text-dim);
+    color: var(--cyber-orange);
+    letter-spacing: 0.12em;
     margin: 0;
+  }
+
+  .about-page__subtitle-sep {
+    color: rgba(232, 130, 10, 0.35);
+    font-size: 0.75rem;
   }
 
   /* Rows */
   .about-page__row {
     display: grid;
+    grid-template-columns: 1fr;
     gap: 16px;
     align-items: start;
-  }
-
-  .about-page__row--about {
-    grid-template-columns: 1fr;
-  }
-
-  .about-page__row--exp-skills {
-    grid-template-columns: 1fr 420px;
-  }
-
-  .about-page__row--bottom {
-    grid-template-columns: 1fr 1fr;
   }
 
   /* About panel */
@@ -393,6 +419,68 @@ const promptUserEncoded = Buffer.from("root@xomenko.com").toString("base64");
     letter-spacing: 0.08em;
   }
 
+  /* Contact strip */
+  .about-contact-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .about-contact-strip__item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 14px 6px 10px;
+    background: rgba(13, 13, 13, 0.5);
+    border: 1px solid rgba(232, 130, 10, 0.15);
+    text-decoration: none;
+    flex: 1;
+    min-width: 200px;
+    transition: border-color 0.15s, background 0.15s;
+  }
+
+  .about-contact-strip__item:hover {
+    border-color: rgba(232, 130, 10, 0.4);
+    background: rgba(232, 130, 10, 0.05);
+  }
+
+  .about-contact-strip__icon {
+    display: flex;
+    align-items: center;
+    color: var(--cyber-text-dim);
+    flex-shrink: 0;
+    transition: color 0.15s;
+  }
+
+  .about-contact-strip__item:hover .about-contact-strip__icon {
+    color: var(--cyber-orange);
+  }
+
+  .about-contact-strip__label {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--cyber-text-dim);
+    letter-spacing: 0.1em;
+    flex-shrink: 0;
+    width: 60px;
+  }
+
+  .about-contact-strip__value {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--cyber-text);
+    flex: 1;
+    text-align: right;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: color 0.15s;
+  }
+
+  .about-contact-strip__item:hover .about-contact-strip__value {
+    color: var(--cyber-orange);
+  }
+
   /* Skills */
   .skills-body {
     display: grid;
@@ -422,39 +510,6 @@ const promptUserEncoded = Buffer.from("root@xomenko.com").toString("base64");
 
   .skills-divider {
     display: none;
-  }
-
-  .skills-certs {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  .skills-cert {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 8px;
-  }
-
-  .skills-cert__label {
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
-    color: var(--cyber-text);
-  }
-
-  .skills-cert__year {
-    font-family: var(--font-mono);
-    font-size: 0.73rem;
-    color: var(--cyber-text-dim);
-    flex-shrink: 0;
-  }
-
-  /* Responsive */
-  @media (max-width: 1024px) {
-    .about-page__row--exp-skills {
-      grid-template-columns: 1fr;
-    }
   }
 
   /* Education */
@@ -517,6 +572,15 @@ const promptUserEncoded = Buffer.from("root@xomenko.com").toString("base64");
     letter-spacing: 0.02em;
   }
 
+  .edu-item__specialization {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--cyber-orange);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 3px;
+  }
+
   .edu-item__period {
     font-family: var(--font-mono);
     font-size: 0.68rem;
@@ -555,9 +619,6 @@ const promptUserEncoded = Buffer.from("root@xomenko.com").toString("base64");
   @media (max-width: 640px) {
     .about-page {
       padding: 24px 16px 60px;
-    }
-    .about-page__row--bottom {
-      grid-template-columns: 1fr;
     }
     .skills-body {
       grid-template-columns: 1fr;

@@ -1,0 +1,192 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import NavBar from "@/components/NavBar.astro";
+import TerminalFrame from "@/components/TerminalFrame.astro";
+import PostCard from "@/components/PostCard.astro";
+import SiteFooter from "@/components/SiteFooter.astro";
+import { getCollection } from "astro:content";
+import { skillCategories } from "@/data/skills";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("blog", ({ data }) => !data.draft);
+
+  const toSlug = (s: string) =>
+    s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+
+  const blogTagSlugs = [...new Set(posts.flatMap((p) => p.data.tags.map(toSlug)))];
+  const skillSlugs = [...new Set(skillCategories.flatMap((c) => c.skills.map(toSlug)))];
+  const allSlugs = [...new Set([...blogTagSlugs, ...skillSlugs])];
+
+  return allSlugs.map((tag) => ({ params: { tag } }));
+}
+
+const { tag } = Astro.params;
+
+const toSlug = (s: string) =>
+  s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+
+const allPosts = (await getCollection("blog", ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const posts = allPosts.filter((p) => p.data.tags.map(toSlug).includes(tag));
+
+const matchingSkill = skillCategories
+  .flatMap((c) => c.skills)
+  .find((s) => toSlug(s) === tag);
+
+const displayName = matchingSkill ?? tag;
+---
+
+<BaseLayout
+  title={`#${displayName} — Dmytro Khomenko`}
+  description={`Posts tagged with ${displayName}.`}
+>
+  <NavBar />
+  <main class="tag-page">
+
+    <section class="tag-page__header">
+      <div class="tag-page__prompt">
+        <span class="tag-page__prompt-path">~/blog/tags</span>
+        <span class="tag-page__prompt-sep">$</span>
+        <span class="tag-page__prompt-cmd">grep -r "{tag}"</span>
+        <span class="blink tag-page__cursor">▌</span>
+      </div>
+      <h1 class="tag-page__title">#{displayName}</h1>
+      <p class="tag-page__subtitle">{posts.length} {posts.length === 1 ? "post" : "posts"} tagged</p>
+    </section>
+
+    <div class="tag-page__body">
+      <TerminalFrame title={`// TAG:${tag.toUpperCase()}`} headerRight={`${posts.length} RESULTS`}>
+        {posts.length > 0 ? (
+          <div class="posts-grid">
+            {posts.map((post) => (
+              <PostCard
+                title={post.data.title}
+                description={post.data.description}
+                pubDate={post.data.pubDate}
+                tags={post.data.tags}
+                href={`/blog/${post.slug}`}
+              />
+            ))}
+          </div>
+        ) : (
+          <div class="tag-page__empty">
+            <span class="tag-page__empty-icon">_</span>
+            <p class="tag-page__empty-text">No posts with this tag yet.</p>
+            <a href="/blog" class="tag-page__back">← ALL POSTS</a>
+          </div>
+        )}
+      </TerminalFrame>
+    </div>
+
+    <div class="tag-page__nav">
+      <a href="/blog" class="tag-page__back">← ALL POSTS</a>
+    </div>
+
+    <SiteFooter />
+  </main>
+</BaseLayout>
+
+<style>
+  .tag-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .tag-page__header {
+    border-bottom: 1px solid rgba(232, 130, 10, 0.15);
+    padding-bottom: 24px;
+  }
+
+  .tag-page__prompt {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    margin-bottom: 14px;
+  }
+
+  .tag-page__prompt-path { color: var(--cyber-orange); }
+  .tag-page__prompt-sep  { color: var(--cyber-text-dim); }
+  .tag-page__prompt-cmd  { color: var(--cyber-text); }
+  .tag-page__cursor      { color: var(--cyber-orange); }
+
+  .tag-page__title {
+    font-family: var(--font-sans);
+    font-size: clamp(1.8rem, 3vw, 2.6rem);
+    font-weight: 900;
+    color: var(--cyber-orange);
+    letter-spacing: 0.08em;
+    margin: 0 0 6px;
+  }
+
+  .tag-page__subtitle {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: var(--cyber-text-dim);
+    margin: 0;
+  }
+
+  .posts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+
+  .tag-page__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 40px 20px;
+  }
+
+  .tag-page__empty-icon {
+    font-family: var(--font-mono);
+    font-size: 2rem;
+    color: rgba(232, 130, 10, 0.3);
+    animation: blink-anim 1s step-end infinite;
+  }
+
+  @keyframes blink-anim {
+    50% { opacity: 0; }
+  }
+
+  .tag-page__empty-text {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: var(--cyber-text-dim);
+    margin: 0;
+  }
+
+  .tag-page__back {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--cyber-orange);
+    text-decoration: none;
+    letter-spacing: 0.08em;
+    border: 1px solid rgba(232, 130, 10, 0.3);
+    padding: 4px 12px;
+    transition: background 0.15s, box-shadow 0.15s;
+  }
+
+  .tag-page__back:hover {
+    background: rgba(232, 130, 10, 0.07);
+    box-shadow: 0 0 8px rgba(232, 130, 10, 0.15);
+  }
+
+  .tag-page__nav {
+    display: flex;
+  }
+
+  @media (max-width: 640px) {
+    .tag-page {
+      padding: 24px 16px 60px;
+    }
+  }
+</style>

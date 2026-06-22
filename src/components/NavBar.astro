@@ -1,11 +1,4 @@
 ---
-const now = new Date();
-const buildDate = [
-  now.getFullYear(),
-  String(now.getMonth() + 1).padStart(2, "0"),
-  String(now.getDate()).padStart(2, "0"),
-].join(".");
-
 const NAV_LINKS = [
   { label: "HOME", href: "/" },
   { label: "BLOG", href: "/blog" },
@@ -28,7 +21,6 @@ const currentPath = Astro.url.pathname;
       <span class="navbar__name">DMYTRO KHOMENKO</span>
       <span class="navbar__sep">|</span>
       <span class="navbar__subtitle">PERSONAL TERMINAL v1.0</span>
-      <span class="navbar__build">SYS.BUILD: {buildDate}</span>
     </div>
 
     <div class="navbar__links">
@@ -128,14 +120,7 @@ const currentPath = Astro.url.pathname;
     letter-spacing: 0.05em;
   }
 
-  .navbar__build {
-    color: var(--cyber-text-dim);
-    opacity: 0.6;
-    font-size: 0.95rem;
-    letter-spacing: 0.05em;
-  }
-
-  .navbar__links {
+.navbar__links {
     display: flex;
     align-items: center;
     gap: 4px;
@@ -166,8 +151,7 @@ const currentPath = Astro.url.pathname;
 
   /* ── Tablet: hide secondary identity text ── */
   @media (max-width: 1024px) {
-    .navbar__subtitle,
-    .navbar__build {
+    .navbar__subtitle {
       display: none;
     }
   }
@@ -184,7 +168,6 @@ const currentPath = Astro.url.pathname;
     .navbar__name,
     .navbar__sep,
     .navbar__subtitle,
-    .navbar__build,
     .navbar__prompt {
       display: none;
     }

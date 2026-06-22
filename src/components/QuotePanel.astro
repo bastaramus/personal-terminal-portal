@@ -1,8 +1,7 @@
 ---
-const quote = {
-  text: "Automation is not about replacing people — it's about freeing them to do work that actually matters.",
-  author: "Dmytro Khomenko",
-};
+import { quotes } from "@/data/quotes";
+
+const quote = quotes[Math.floor(Math.random() * quotes.length)];
 ---
 
 <div class="quote-panel">
@@ -14,6 +13,7 @@ const quote = {
     </svg>
     <span>— {quote.author}</span>
   </div>
+  <a href="/quotes" class="quote-panel__more">// VIEW ALL QUOTES →</a>
 </div>
 
 <style>
@@ -56,5 +56,22 @@ const quote = {
     color: var(--cyber-orange);
     font-family: var(--font-mono);
     font-size: 0.95rem;
+  }
+
+  .quote-panel__more {
+    align-self: flex-start;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    color: var(--cyber-text-dim);
+    text-decoration: none;
+    border-top: 1px solid rgba(232, 130, 10, 0.1);
+    padding-top: 8px;
+    width: 100%;
+    transition: color 0.15s;
+  }
+
+  .quote-panel__more:hover {
+    color: var(--cyber-orange);
   }
 </style>

@@ -1,0 +1,60 @@
+---
+const now = new Date();
+const buildDate = [
+  now.getFullYear(),
+  String(now.getMonth() + 1).padStart(2, "0"),
+  String(now.getDate()).padStart(2, "0"),
+].join(".");
+---
+
+<footer class="site-footer">
+  <a href="/" class="site-footer__brand">xomenko.com</a>
+  <span class="site-footer__sep">|</span>
+  <span class="site-footer__build">SYS.BUILD: {buildDate}</span>
+  <span class="site-footer__sep">|</span>
+  <span>built with astro + love for the terminal</span>
+  <span class="site-footer__sep">|</span>
+  <span>{now.getFullYear()}</span>
+</footer>
+
+<style>
+  .site-footer {
+    margin: 0 24px;
+    padding: 12px 0 24px;
+    border-top: 1px solid rgba(232, 130, 10, 0.15);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--font-mono);
+    font-size: 0.73rem;
+    color: var(--cyber-text-dim);
+    flex-wrap: wrap;
+  }
+
+  .site-footer__brand {
+    color: var(--cyber-orange);
+    text-decoration: none;
+    opacity: 0.8;
+    transition: opacity 0.15s;
+  }
+
+  .site-footer__brand:hover {
+    opacity: 1;
+  }
+
+  .site-footer__build {
+    opacity: 0.6;
+    letter-spacing: 0.05em;
+  }
+
+  .site-footer__sep {
+    color: rgba(232, 130, 10, 0.3);
+  }
+
+  @media (max-width: 640px) {
+    .site-footer {
+      margin: 0 12px;
+      gap: 6px;
+    }
+  }
+</style>

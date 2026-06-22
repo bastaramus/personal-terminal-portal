@@ -3,6 +3,7 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 import NavBar from "@/components/NavBar.astro";
 import TerminalFrame from "@/components/TerminalFrame.astro";
 import ProjectCard from "@/components/ProjectCard.astro";
+import SiteFooter from "@/components/SiteFooter.astro";
 import { projects } from "@/data/projects";
 
 const statusOrder = { ACTIVE: 0, BETA: 1, MAINTAINED: 2, ARCHIVED: 3 };
@@ -85,6 +86,7 @@ const allTags = [...new Set(projects.flatMap((p) => p.tags))].sort();
       </section>
 
     </div>
+    <SiteFooter />
   </main>
 </BaseLayout>
 

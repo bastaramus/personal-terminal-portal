@@ -1,0 +1,291 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import NavBar from "@/components/NavBar.astro";
+import TerminalFrame from "@/components/TerminalFrame.astro";
+import SiteFooter from "@/components/SiteFooter.astro";
+import { quotes } from "@/data/quotes";
+
+const authors = [...new Set(quotes.map((q) => q.author))].sort();
+const countByAuthor = Object.fromEntries(
+  authors.map((a) => [a, quotes.filter((q) => q.author === a).length])
+);
+---
+
+<BaseLayout title="Quotes — Dmytro Khomenko" description="A collection of quotes that shaped how I think about engineering, learning, and building.">
+  <NavBar />
+  <main class="quotes-page">
+
+    <section class="quotes-page__header">
+      <div class="quotes-page__prompt">
+        <span class="quotes-page__prompt-path">~/quotes</span>
+        <span class="quotes-page__prompt-sep">$</span>
+        <span class="quotes-page__prompt-cmd">cat favorites.txt</span>
+        <span class="blink quotes-page__cursor">▌</span>
+      </div>
+      <h1 class="quotes-page__title">FAVORITE QUOTES</h1>
+      <p class="quotes-page__subtitle">Words that shaped how I think about engineering, learning, and building.</p>
+    </section>
+
+    <div class="quotes-page__body">
+
+      <!-- Sidebar -->
+      <aside class="quotes-page__sidebar">
+        <TerminalFrame title="// AUTHORS">
+          <div class="author-list">
+            <button class="author-list__item author-list__item--active" data-author="all">
+              ALL <span class="author-list__count">{quotes.length}</span>
+            </button>
+            {authors.map((author) => (
+              <button class="author-list__item" data-author={author}>
+                {author}
+                <span class="author-list__count">{countByAuthor[author]}</span>
+              </button>
+            ))}
+          </div>
+        </TerminalFrame>
+      </aside>
+
+      <!-- Quotes -->
+      <section class="quotes-page__main">
+        <TerminalFrame title="// QUOTES.COLLECTION" headerRight={`${quotes.length} ENTRIES`}>
+          <div class="quotes-grid" id="quotes-grid">
+            {quotes.map((quote, i) => (
+              <div class="quote-card" data-author={quote.author}>
+                <div class="quote-card__index">#{String(i + 1).padStart(2, "0")}</div>
+                <div class="quote-card__mark">"</div>
+                <p class="quote-card__text">{quote.text}</p>
+                <div class="quote-card__author">
+                  <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                  <span>— {quote.author}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </TerminalFrame>
+      </section>
+
+    </div>
+
+    <SiteFooter />
+  </main>
+</BaseLayout>
+
+<script>
+  const btns = document.querySelectorAll<HTMLButtonElement>('.author-list__item');
+  const cards = document.querySelectorAll<HTMLElement>('.quote-card');
+  const counter = document.querySelector<HTMLElement>('.quotes-page__main .terminal-frame__header-right');
+
+  function filter(author: string) {
+    btns.forEach((b) => b.classList.toggle('author-list__item--active', b.dataset.author === author));
+
+    let visible = 0;
+    cards.forEach((card) => {
+      const show = author === 'all' || card.dataset.author === author;
+      card.style.display = show ? '' : 'none';
+      if (show) visible++;
+    });
+
+    if (counter) counter.textContent = `${visible} ENTRIES`;
+  }
+
+  btns.forEach((btn) => {
+    btn.addEventListener('click', () => filter(btn.dataset.author!));
+  });
+</script>
+
+<style>
+  .quotes-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .quotes-page__header {
+    border-bottom: 1px solid rgba(232, 130, 10, 0.15);
+    padding-bottom: 24px;
+  }
+
+  .quotes-page__prompt {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    margin-bottom: 14px;
+  }
+
+  .quotes-page__prompt-path { color: var(--cyber-orange); }
+  .quotes-page__prompt-sep  { color: var(--cyber-text-dim); }
+  .quotes-page__prompt-cmd  { color: var(--cyber-text); }
+  .quotes-page__cursor      { color: var(--cyber-orange); }
+
+  .quotes-page__title {
+    font-family: var(--font-sans);
+    font-size: clamp(1.8rem, 3vw, 2.6rem);
+    font-weight: 900;
+    color: var(--cyber-text-bright);
+    letter-spacing: 0.1em;
+    margin: 0 0 6px;
+  }
+
+  .quotes-page__subtitle {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: var(--cyber-text-dim);
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  /* Body layout */
+  .quotes-page__body {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 16px;
+    align-items: start;
+  }
+
+  .quotes-page__sidebar {
+    position: sticky;
+    top: 60px;
+  }
+
+  /* Author list */
+  .author-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .author-list__item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    background: none;
+    border: 1px solid transparent;
+    color: var(--cyber-text-dim);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    padding: 5px 6px;
+    cursor: pointer;
+    text-align: left;
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
+  }
+
+  .author-list__item:hover {
+    color: var(--cyber-orange);
+    border-color: rgba(232, 130, 10, 0.2);
+  }
+
+  .author-list__item--active {
+    color: var(--cyber-orange);
+    border-color: rgba(232, 130, 10, 0.3);
+    background: rgba(232, 130, 10, 0.04);
+  }
+
+  .author-list__count {
+    font-size: 0.65rem;
+    color: var(--cyber-text-dim);
+    flex-shrink: 0;
+  }
+
+  .author-list__item--active .author-list__count {
+    color: var(--cyber-orange);
+  }
+
+  /* Grid */
+  .quotes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 12px;
+  }
+
+  /* Card */
+  .quote-card {
+    position: relative;
+    padding: 20px 20px 16px;
+    background: rgba(232, 130, 10, 0.02);
+    border: 1px solid rgba(232, 130, 10, 0.15);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .quote-card:hover {
+    border-color: rgba(232, 130, 10, 0.35);
+    background: rgba(232, 130, 10, 0.04);
+  }
+
+  .quote-card__index {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: rgba(232, 130, 10, 0.35);
+    letter-spacing: 0.12em;
+  }
+
+  .quote-card__mark {
+    position: absolute;
+    top: 10px;
+    right: 14px;
+    color: rgba(232, 130, 10, 0.15);
+    font-family: var(--font-mono);
+    font-size: 3rem;
+    line-height: 1;
+    pointer-events: none;
+  }
+
+  .quote-card__text {
+    color: var(--cyber-text-bright);
+    font-size: 0.95rem;
+    line-height: 1.75;
+    font-style: italic;
+    margin: 0;
+    flex: 1;
+  }
+
+  .quote-card__author {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--cyber-orange);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+    border-top: 1px solid rgba(232, 130, 10, 0.1);
+    padding-top: 8px;
+  }
+
+  @media (max-width: 900px) {
+    .quotes-page__body {
+      grid-template-columns: 1fr;
+    }
+    .quotes-page__sidebar {
+      position: static;
+    }
+    .author-list {
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+    .author-list__item {
+      width: auto;
+      flex: none;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .quotes-page {
+      padding: 24px 16px 60px;
+    }
+    .quotes-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

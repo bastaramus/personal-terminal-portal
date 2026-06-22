@@ -5,15 +5,12 @@ interface Props {
 }
 
 const { tag, href } = Astro.props;
+
+const slug = tag.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+const link = href ?? `/tags/${slug}`;
 ---
 
-{
-  href ? (
-    <a href={href} class="skill-tag skill-tag--link">{tag}</a>
-  ) : (
-    <span class="skill-tag">{tag}</span>
-  )
-}
+<a href={link} class="skill-tag">{tag}</a>
 
 <style>
   .skill-tag {
@@ -25,14 +22,11 @@ const { tag, href } = Astro.props;
     font-size: 0.78rem;
     font-family: var(--font-mono);
     letter-spacing: 0.04em;
-  }
-
-  .skill-tag--link {
     text-decoration: none;
     transition: border-color 0.15s, color 0.15s, background 0.15s;
   }
 
-  .skill-tag--link:hover {
+  .skill-tag:hover {
     border-color: var(--cyber-orange);
     color: var(--cyber-orange);
     background: rgba(232, 130, 10, 0.1);

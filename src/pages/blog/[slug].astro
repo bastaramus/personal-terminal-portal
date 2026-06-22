@@ -2,6 +2,7 @@
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import NavBar from "@/components/NavBar.astro";
 import TerminalFrame from "@/components/TerminalFrame.astro";
+import SiteFooter from "@/components/SiteFooter.astro";
 import { getCollection, getEntry } from "astro:content";
 
 export async function getStaticPaths() {
@@ -80,6 +81,7 @@ const next = allPosts[currentIdx - 1];
       </nav>
     )}
 
+    <SiteFooter />
   </main>
 </BaseLayout>
 

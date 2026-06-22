@@ -27,14 +27,16 @@ export const profile = {
 
 export const education = [
   {
-    degree: "Master's Degree in Systems and Methods of Decision Making",
-    school: "National Technical University of Ukraine — Kyiv Polytechnic Institute",
+    degree: "Master's Degree",
+    specialization: "Systems and Methods of Decision Making",
+    school: "National Technical University of Ukraine",
     faculty: "Institute for Applied System Analysis",
     period: "2012 — 2014",
   },
   {
-    degree: "Bachelor's Degree in Computer Science",
-    school: "National Technical University of Ukraine — Kyiv Polytechnic Institute",
+    degree: "Bachelor's Degree",
+    specialization: "Computer Science",
+    school: "National Technical University of Ukraine",
     faculty: "Institute for Applied System Analysis",
     period: "2008 — 2012",
   },
