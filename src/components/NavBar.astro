@@ -37,18 +37,40 @@ const currentPath = Astro.url.pathname;
           </a>
         ))
       }
+      <button class="navbar__theme-btn" id="theme-toggle" aria-label="Toggle theme" title="Toggle theme">
+        <span class="navbar__theme-icon navbar__theme-icon--dark">◐</span>
+        <span class="navbar__theme-icon navbar__theme-icon--light">◑</span>
+      </button>
     </div>
   </div>
 </nav>
+
+<script>
+  function initThemeToggle() {
+    const btn = document.getElementById('theme-toggle');
+    if (!btn) return;
+    btn.addEventListener('click', () => {
+      const html = document.documentElement;
+      html.classList.add('theme-switching');
+      const next = html.dataset.theme === 'light' ? 'dark' : 'light';
+      html.dataset.theme = next;
+      localStorage.setItem('theme', next);
+      setTimeout(() => html.classList.remove('theme-switching'), 300);
+    });
+  }
+
+  document.addEventListener('astro:page-load', initThemeToggle);
+</script>
 
 <style>
   .navbar {
     position: sticky;
     top: 0;
     z-index: 100;
-    background: rgba(13, 13, 13, 0.95);
+    background: var(--cyber-nav-bg);
     border-bottom: 1px solid var(--cyber-orange-dim);
     backdrop-filter: blur(8px);
+    transition: background 0.3s, border-color 0.3s;
   }
 
   .navbar::after {
@@ -148,6 +170,34 @@ const currentPath = Astro.url.pathname;
     border-color: var(--cyber-orange-dim);
     text-shadow: 0 0 8px var(--cyber-orange-glow);
   }
+
+  .navbar__theme-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: none;
+    border: 1px solid var(--cyber-orange-dim);
+    color: var(--cyber-orange);
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 0;
+    margin-left: 4px;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    flex-shrink: 0;
+  }
+
+  .navbar__theme-btn:hover {
+    border-color: var(--cyber-orange);
+    box-shadow: 0 0 8px var(--cyber-orange-glow);
+  }
+
+  .navbar__theme-icon { line-height: 1; }
+  .navbar__theme-icon--light { display: none; }
+
+  :global(html[data-theme="light"]) .navbar__theme-icon--dark  { display: none; }
+  :global(html[data-theme="light"]) .navbar__theme-icon--light { display: inline; }
 
   /* ── Tablet: hide secondary identity text ── */
   @media (max-width: 1024px) {

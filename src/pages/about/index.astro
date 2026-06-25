@@ -193,7 +193,6 @@ const contacts = profile.socials.map((s) => ({
     });
   }
 
-  initAbout();
   document.addEventListener('astro:page-load', initAbout);
 </script>
 
@@ -440,6 +439,11 @@ const contacts = profile.socials.map((s) => ({
   .about-contact-strip__item:hover {
     border-color: rgba(232, 130, 10, 0.4);
     background: rgba(232, 130, 10, 0.05);
+  }
+
+  :global(html[data-theme="light"]) .about-contact-strip__item {
+    background: var(--cyber-panel);
+    border-color: var(--cyber-orange-dim);
   }
 
   .about-contact-strip__icon {

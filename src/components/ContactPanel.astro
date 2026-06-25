@@ -48,7 +48,6 @@ const socials = profile.socials.map((s) => ({
     });
   }
 
-  initContactPanel();
   document.addEventListener('astro:page-load', initContactPanel);
 </script>
 
@@ -73,6 +72,16 @@ const socials = profile.socials.map((s) => ({
   .contact-panel__row:hover {
     border-color: rgba(232, 130, 10, 0.3);
     background: rgba(232, 130, 10, 0.04);
+  }
+
+  :global(html[data-theme="light"]) .contact-panel__row {
+    background: var(--cyber-panel);
+    border-color: var(--cyber-orange-dim);
+  }
+
+  :global(html[data-theme="light"]) .contact-panel__row:hover {
+    background: var(--cyber-panel-alt);
+    border-color: var(--cyber-orange);
   }
 
   .contact-panel__icon {

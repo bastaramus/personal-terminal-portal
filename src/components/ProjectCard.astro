@@ -77,6 +77,10 @@ const statusColor: Record<string, string> = {
     box-shadow: 0 0 12px rgba(232, 130, 10, 0.08);
   }
 
+  :global(html[data-theme="light"]) .project-card {
+    background: var(--cyber-panel-alt);
+  }
+
   .project-card__top {
     display: flex;
     justify-content: space-between;

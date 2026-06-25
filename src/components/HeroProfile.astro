@@ -1,6 +1,7 @@
 ---
 import { Image } from "astro:assets";
 import avatarSrc from "@/assets/avatar.png";
+import avatarLightSrc from "@/assets/avatar-light.png";
 import { profile } from "@/data/profile";
 import ContactPanel from "@/components/ContactPanel.astro";
 const promptUserEncoded = Buffer.from("root@xomenko.com").toString("base64");
@@ -25,7 +26,8 @@ const promptUserEncoded = Buffer.from("root@xomenko.com").toString("base64");
         <span class="hero__corner hero__corner--bl"></span>
         <span class="hero__corner hero__corner--br"></span>
 
-        <Image src={avatarSrc} alt="Dmytro Khomenko" class="hero__avatar-img" widths={[320, 400, 480]} sizes="(max-width: 640px) 160px, (max-width: 1024px) 200px, 240px" format="webp" quality={80} loading="eager" fetchpriority="high" />
+        <Image src={avatarSrc} alt="Dmytro Khomenko" class="hero__avatar-img hero__avatar-img--dark" widths={[320, 400, 480]} sizes="(max-width: 640px) 160px, (max-width: 1024px) 200px, 240px" format="webp" quality={80} loading="eager" fetchpriority="high" />
+        <Image src={avatarLightSrc} alt="Dmytro Khomenko" class="hero__avatar-img hero__avatar-img--light" widths={[320, 400, 480]} sizes="(max-width: 640px) 160px, (max-width: 1024px) 200px, 240px" format="webp" quality={80} loading="lazy" />
         <div class="hero__avatar-scan"></div>
       </div>
 
@@ -189,7 +191,6 @@ const promptUserEncoded = Buffer.from("root@xomenko.com").toString("base64");
     });
   }
 
-  initHero();
   document.addEventListener('astro:page-load', initHero);
 </script>
 
@@ -225,6 +226,19 @@ const promptUserEncoded = Buffer.from("root@xomenko.com").toString("base64");
     position: absolute;
     inset: 0;
     background: linear-gradient(0deg, rgba(10, 12, 20, 1) 0%, transparent 60%);
+  }
+
+  :global(html[data-theme="light"]) .hero__gradient-h {
+    background: linear-gradient(
+      90deg,
+      rgba(240, 235, 224, 0.97) 40%,
+      rgba(240, 235, 224, 0.7) 70%,
+      rgba(240, 235, 224, 0.3) 100%
+    );
+  }
+
+  :global(html[data-theme="light"]) .hero__gradient-v {
+    background: linear-gradient(0deg, rgba(240, 235, 224, 1) 0%, transparent 60%);
   }
 
   .hero__scan {
@@ -286,7 +300,16 @@ const promptUserEncoded = Buffer.from("root@xomenko.com").toString("base64");
     height: 100%;
     object-fit: cover;
     display: block;
+    position: absolute;
+    inset: 0;
   }
+
+  .hero__avatar-img--light {
+    display: none;
+  }
+
+  :global(html[data-theme="light"]) .hero__avatar-img--dark  { display: none; }
+  :global(html[data-theme="light"]) .hero__avatar-img--light { display: block; }
 
   .hero__avatar-scan {
     position: absolute;
@@ -358,6 +381,12 @@ const promptUserEncoded = Buffer.from("root@xomenko.com").toString("base64");
     box-shadow: 0 0 10px rgba(232, 130, 10, 0.2);
   }
 
+  :global(html[data-theme="light"]) .hero__avatar-link {
+    background: var(--cyber-panel);
+    border-color: var(--cyber-orange-dim);
+    color: var(--cyber-text-dim);
+  }
+
   /* Content */
   .hero__content {
     display: flex;
@@ -418,6 +447,15 @@ const promptUserEncoded = Buffer.from("root@xomenko.com").toString("base64");
     background: var(--scanlines);
     pointer-events: none;
     z-index: 1;
+  }
+
+  :global(html[data-theme="light"]) .hero__name {
+    color: var(--cyber-text-dim);
+    text-shadow: none;
+  }
+
+  :global(html[data-theme="light"]) .hero__name::after {
+    display: none;
   }
 
   .hero__name-last {
@@ -488,7 +526,7 @@ const promptUserEncoded = Buffer.from("root@xomenko.com").toString("base64");
 
   .hero__cta--primary {
     border-color: var(--cyber-orange);
-    color: var(--cyber-bg);
+    color: #0d0d0d;
     background: var(--cyber-orange);
     box-shadow: 0 0 18px rgba(232, 130, 10, 0.5);
   }
@@ -602,6 +640,10 @@ const promptUserEncoded = Buffer.from("root@xomenko.com").toString("base64");
     padding: 24px;
   }
 
+  :global(html[data-theme="light"]) .ssh-modal {
+    background: rgba(0, 0, 0, 0.4);
+  }
+
   .ssh-modal--open {
     display: flex;
   }
@@ -640,6 +682,10 @@ const promptUserEncoded = Buffer.from("root@xomenko.com").toString("base64");
     background: rgba(232, 130, 10, 0.04);
     border-bottom: 1px solid var(--cyber-orange-dim);
     position: relative;
+  }
+
+  :global(html[data-theme="light"]) .ssh-modal__header {
+    background: rgba(139, 68, 0, 0.06);
   }
 
   .ssh-modal__header::after {

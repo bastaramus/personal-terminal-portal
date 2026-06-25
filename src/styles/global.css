@@ -63,6 +63,7 @@
   --cyber-text-dim: #6b6b6b;
   --cyber-text-bright: #f5f5f5;
   --cyber-grid: rgba(232, 130, 10, 0.03);
+  --cyber-nav-bg: rgba(13, 13, 13, 0.95);
   --scanlines: repeating-linear-gradient(
     0deg,
     transparent,
@@ -72,10 +73,54 @@
   );
 }
 
+html[data-theme="light"] {
+  --cyber-bg: #f0ebe0;
+  --cyber-panel: #e8e2d5;
+  --cyber-panel-alt: #e2dbc8;
+  --cyber-orange: #8b4400;
+  --cyber-orange-glow: rgba(139, 68, 0, 0.4);
+  --cyber-orange-dim: rgba(139, 68, 0, 0.3);
+  --cyber-green: #1e7a3e;
+  --cyber-text: #2a2218;
+  --cyber-text-dim: #7a6a52;
+  --cyber-text-bright: #0f0b07;
+  --cyber-grid: rgba(139, 68, 0, 0.05);
+  --cyber-nav-bg: rgba(240, 235, 224, 0.95);
+  --scanlines: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.04) 2px,
+    rgba(0, 0, 0, 0.04) 4px
+  );
+}
+
+html[data-theme="light"] body::before {
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.03) 2px,
+    rgba(0, 0, 0, 0.03) 4px
+  );
+}
+
 *,
 *::before,
 *::after {
   box-sizing: border-box;
+}
+
+html.theme-switching,
+html.theme-switching *,
+html.theme-switching *::before,
+html.theme-switching *::after {
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    fill 0.25s ease !important;
 }
 
 html {

@@ -21,7 +21,7 @@ monospace fonts, retro console widget frames. Every design decision should reinf
 |-------|-----------|
 | Framework | Astro 5 — static-first, zero client-side JS by default |
 | Styling | Tailwind CSS v4 via `@tailwindcss/vite` — utility classes + CSS custom properties |
-| Fonts | JetBrains Mono (body/UI) · Inter (headings) — loaded via Google Fonts in BaseLayout |
+| Fonts | IBM Plex Mono (body/UI) · Inter (headings) — self-hosted WOFF2 in `public/fonts/`, declared in `global.css` |
 | Content | Markdown in `src/content/` — Astro content collections with Zod schemas |
 | Language | TypeScript throughout (strict) |
 | Design reference | Figma (cyberpunk design system, tokens match exactly) |
@@ -35,7 +35,7 @@ No React, Vue, or other JS framework. All pages render at build time.
 ```
 src/
   layouts/
-    BaseLayout.astro        # <html> shell, Google Fonts, global CSS import
+    BaseLayout.astro        # <html> shell, font preloads, ViewTransitions, global CSS import
   components/
     NavBar.astro            # Sticky top nav
     TerminalFrame.astro     # THE reusable panel primitive (orange border, header bar)
@@ -220,6 +220,60 @@ When asked to work with Figma:
 | Featured project cards | `src/data/projects.ts` |
 | Blog posts | `src/content/blog/*.md` |
 | Project detail pages | `src/content/projects/*.md` |
+
+---
+
+## Performance standards
+
+### Images
+
+- **Never use a plain `<img>` tag** for local images. Always use Astro's `<Image>` component from `astro:assets`.
+- Place local image source files in `src/assets/` so Astro can optimise them at build time.
+- Always set `format="webp"` and `quality={80}`.
+- Always provide `widths` and `sizes` so the browser downloads only what it needs:
+  ```astro
+  <Image
+    src={imgSrc}
+    alt="..."
+    widths={[320, 400, 480]}
+    sizes="(max-width: 640px) 160px, (max-width: 1024px) 200px, 240px"
+    format="webp"
+    quality={80}
+  />
+  ```
+- For above-the-fold images (hero, avatar) add `loading="eager" fetchpriority="high"`.
+- All other images default to `loading="lazy"` (Astro's default).
+- Never reference external image URLs (e.g. Unsplash CDN) — download them to `public/` first.
+
+### Fonts
+
+- Fonts are self-hosted in `public/fonts/` as WOFF2. **Do not add Google Fonts `<link>` tags.**
+- `@font-face` declarations live in `src/styles/global.css` (latin subset only).
+- Critical font weights (regular + bold) are preloaded in `BaseLayout.astro` via `<link rel="preload" as="font">`.
+- Only add a new font file if a new weight is genuinely needed; keep the set minimal.
+
+### JavaScript
+
+- **View Transitions are enabled** (`<ViewTransitions />` in `BaseLayout`). Every `<script>` block must be compatible:
+  - Wrap all DOM setup in a named `init` function.
+  - Call it once immediately **and** register it on `astro:page-load`:
+    ```ts
+    function initFoo() {
+      const el = document.getElementById('foo');
+      if (!el) return; // guard — element may not exist on every page
+      el.addEventListener('click', () => { ... });
+    }
+    document.addEventListener('astro:page-load', initFoo);
+    ```
+  - Use `getElementById` / `querySelector` with null guards (`if (!el) return`) — the element may not exist on every page the script runs on after navigation.
+  - Never use `document.addEventListener('DOMContentLoaded', ...)` — Astro scripts already run after the DOM is ready, and it won't fire on subsequent View Transition navigations.
+
+### Build output
+
+- HTML is auto-compressed (`compressHTML: true` in `astro.config.mjs`).
+- JS and CSS are minified via esbuild and content-hashed for cache busting.
+- A sitemap is generated automatically by `@astrojs/sitemap` on every build.
+- `public/robots.txt` points crawlers to the sitemap at `https://xomenko.com/sitemap-index.xml`.
 
 ---
 
