@@ -1,4 +1,6 @@
 ---
+import { Image } from "astro:assets";
+import avatarSrc from "@/assets/avatar.png";
 import { profile } from "@/data/profile";
 import ContactPanel from "@/components/ContactPanel.astro";
 const promptUserEncoded = Buffer.from("root@xomenko.com").toString("base64");
@@ -23,7 +25,7 @@ const promptUserEncoded = Buffer.from("root@xomenko.com").toString("base64");
         <span class="hero__corner hero__corner--bl"></span>
         <span class="hero__corner hero__corner--br"></span>
 
-        <img src="/avatar.png" alt="Dmytro Khomenko" class="hero__avatar-img" />
+        <Image src={avatarSrc} alt="Dmytro Khomenko" class="hero__avatar-img" width={480} height={600} format="webp" quality={80} loading="eager" fetchpriority="high" />
         <div class="hero__avatar-scan"></div>
       </div>
 
@@ -205,7 +207,7 @@ const promptUserEncoded = Buffer.from("root@xomenko.com").toString("base64");
   .hero__bg {
     position: absolute;
     inset: 0;
-    background-image: url("https://images.unsplash.com/photo-1672872476232-da16b45c9001?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixlib=rb-4.1.0&q=80&w=1080");
+    background-image: url("/hero-bg.jpg");
     background-size: cover;
     background-position: center 60%;
     filter: brightness(0.18) saturate(1.5) hue-rotate(200deg);
