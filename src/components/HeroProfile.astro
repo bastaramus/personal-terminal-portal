@@ -25,7 +25,7 @@ const promptUserEncoded = Buffer.from("root@xomenko.com").toString("base64");
         <span class="hero__corner hero__corner--bl"></span>
         <span class="hero__corner hero__corner--br"></span>
 
-        <Image src={avatarSrc} alt="Dmytro Khomenko" class="hero__avatar-img" width={480} height={600} format="webp" quality={80} loading="eager" fetchpriority="high" />
+        <Image src={avatarSrc} alt="Dmytro Khomenko" class="hero__avatar-img" widths={[320, 400, 480]} sizes="(max-width: 640px) 160px, (max-width: 1024px) 200px, 240px" format="webp" quality={80} loading="eager" fetchpriority="high" />
         <div class="hero__avatar-scan"></div>
       </div>
 
@@ -136,64 +136,61 @@ const promptUserEncoded = Buffer.from("root@xomenko.com").toString("base64");
 </section>
 
 <script>
-  document.querySelectorAll<HTMLElement>('.hero__prompt-user[data-e]').forEach((el) => {
-    el.textContent = atob(el.dataset.e!);
-  });
-
-  // Contact modal
-  const contactModal = document.getElementById('contact-modal')!;
-  document.getElementById('contact-modal-btn')!.addEventListener('click', () => {
-    contactModal.setAttribute('aria-hidden', 'false');
-    contactModal.classList.add('ssh-modal--open');
-  });
-  const closeContact = () => {
-    contactModal.setAttribute('aria-hidden', 'true');
-    contactModal.classList.remove('ssh-modal--open');
-  };
-  document.getElementById('contact-modal-close')!.addEventListener('click', closeContact);
-  contactModal.addEventListener('click', (e) => { if (e.target === contactModal) closeContact(); });
-
-  // SSH key modal
-  const modal = document.getElementById('ssh-modal')!;
-  const openBtn = document.getElementById('ssh-key-btn')!;
-  const closeBtn = document.getElementById('ssh-modal-close')!;
-  const copyBtn = document.getElementById('ssh-copy-btn')!;
-  const copyLabel = document.getElementById('ssh-copy-label')!;
-  const keyText = document.getElementById('ssh-key-text')!;
-
-  openBtn.addEventListener('click', () => {
-    modal.setAttribute('aria-hidden', 'false');
-    modal.classList.add('ssh-modal--open');
-  });
-
-  const closeModal = () => {
-    modal.setAttribute('aria-hidden', 'true');
-    modal.classList.remove('ssh-modal--open');
-  };
-
-  closeBtn.addEventListener('click', closeModal);
-  modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
-  // Telegram QR modal
-  const tgQrModal = document.getElementById('tg-qr-modal')!;
-  document.getElementById('tg-qr-btn')!.addEventListener('click', () => {
-    tgQrModal.setAttribute('aria-hidden', 'false');
-    tgQrModal.classList.add('ssh-modal--open');
-  });
-  const closeTgQr = () => {
-    tgQrModal.setAttribute('aria-hidden', 'true');
-    tgQrModal.classList.remove('ssh-modal--open');
-  };
-  document.getElementById('tg-qr-modal-close')!.addEventListener('click', closeTgQr);
-  tgQrModal.addEventListener('click', (e) => { if (e.target === tgQrModal) closeTgQr(); });
-
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { closeModal(); closeContact(); closeTgQr(); } });
-
-  copyBtn.addEventListener('click', () => {
-    navigator.clipboard.writeText(keyText.textContent!.trim()).then(() => {
-      copyLabel.textContent = '✓ COPIED';
-      setTimeout(() => { copyLabel.textContent = '⎘ COPY KEY'; }, 2000);
+  function initHero() {
+    document.querySelectorAll<HTMLElement>('.hero__prompt-user[data-e]').forEach((el) => {
+      el.textContent = atob(el.dataset.e!);
     });
-  });
+
+    const contactModal = document.getElementById('contact-modal');
+    const contactBtn = document.getElementById('contact-modal-btn');
+    const contactClose = document.getElementById('contact-modal-close');
+    if (contactModal && contactBtn && contactClose) {
+      const closeContact = () => { contactModal.setAttribute('aria-hidden', 'true'); contactModal.classList.remove('ssh-modal--open'); };
+      contactBtn.addEventListener('click', () => { contactModal.setAttribute('aria-hidden', 'false'); contactModal.classList.add('ssh-modal--open'); });
+      contactClose.addEventListener('click', closeContact);
+      contactModal.addEventListener('click', (e) => { if (e.target === contactModal) closeContact(); });
+    }
+
+    const modal = document.getElementById('ssh-modal');
+    const openBtn = document.getElementById('ssh-key-btn');
+    const closeBtn = document.getElementById('ssh-modal-close');
+    const copyBtn = document.getElementById('ssh-copy-btn');
+    const copyLabel = document.getElementById('ssh-copy-label');
+    const keyText = document.getElementById('ssh-key-text');
+    if (modal && openBtn && closeBtn && copyBtn && copyLabel && keyText) {
+      const closeModal = () => { modal.setAttribute('aria-hidden', 'true'); modal.classList.remove('ssh-modal--open'); };
+      openBtn.addEventListener('click', () => { modal.setAttribute('aria-hidden', 'false'); modal.classList.add('ssh-modal--open'); });
+      closeBtn.addEventListener('click', closeModal);
+      modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+      copyBtn.addEventListener('click', () => {
+        navigator.clipboard.writeText(keyText.textContent!.trim()).then(() => {
+          copyLabel.textContent = '✓ COPIED';
+          setTimeout(() => { copyLabel.textContent = '⎘ COPY KEY'; }, 2000);
+        });
+      });
+    }
+
+    const tgQrModal = document.getElementById('tg-qr-modal');
+    const tgQrBtn = document.getElementById('tg-qr-btn');
+    const tgQrClose = document.getElementById('tg-qr-modal-close');
+    if (tgQrModal && tgQrBtn && tgQrClose) {
+      const closeTgQr = () => { tgQrModal.setAttribute('aria-hidden', 'true'); tgQrModal.classList.remove('ssh-modal--open'); };
+      tgQrBtn.addEventListener('click', () => { tgQrModal.setAttribute('aria-hidden', 'false'); tgQrModal.classList.add('ssh-modal--open'); });
+      tgQrClose.addEventListener('click', closeTgQr);
+      tgQrModal.addEventListener('click', (e) => { if (e.target === tgQrModal) closeTgQr(); });
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        document.getElementById('ssh-modal')?.classList.remove('ssh-modal--open');
+        document.getElementById('contact-modal')?.classList.remove('ssh-modal--open');
+        document.getElementById('tg-qr-modal')?.classList.remove('ssh-modal--open');
+      }
+    });
+  }
+
+  initHero();
+  document.addEventListener('astro:page-load', initHero);
 </script>
 
 <style>

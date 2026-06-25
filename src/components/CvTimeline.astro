@@ -99,27 +99,33 @@ const earlier = experience.slice(3);       // Head of IT, CYFRA, UKR.NET
 </div>
 
 <script>
-  const btn = document.getElementById('earlier-toggle')!;
-  const entries = document.getElementById('earlier-entries')!;
-  const label = document.getElementById('earlier-label')!;
-  const line = document.getElementById('earlier-line')!;
+  function initCvTimeline() {
+    const btn = document.getElementById('earlier-toggle');
+    const entries = document.getElementById('earlier-entries');
+    const label = document.getElementById('earlier-label');
+    const line = document.getElementById('earlier-line');
+    if (!btn || !entries || !label || !line) return;
 
-  btn.addEventListener('click', () => {
-    const expanded = btn.getAttribute('aria-expanded') === 'true';
-    if (expanded) {
-      entries.setAttribute('aria-hidden', 'true');
-      entries.classList.remove('cv-earlier__entries--open');
-      btn.setAttribute('aria-expanded', 'false');
-      label.textContent = '▼ EARLIER EXPERIENCE';
-      line.classList.add('cv-timeline__line--hidden');
-    } else {
-      entries.setAttribute('aria-hidden', 'false');
-      entries.classList.add('cv-earlier__entries--open');
-      btn.setAttribute('aria-expanded', 'true');
-      label.textContent = '▲ COLLAPSE';
-      line.classList.remove('cv-timeline__line--hidden');
-    }
-  });
+    btn.addEventListener('click', () => {
+      const expanded = btn.getAttribute('aria-expanded') === 'true';
+      if (expanded) {
+        entries.setAttribute('aria-hidden', 'true');
+        entries.classList.remove('cv-earlier__entries--open');
+        btn.setAttribute('aria-expanded', 'false');
+        label.textContent = '▼ EARLIER EXPERIENCE';
+        line.classList.add('cv-timeline__line--hidden');
+      } else {
+        entries.setAttribute('aria-hidden', 'false');
+        entries.classList.add('cv-earlier__entries--open');
+        btn.setAttribute('aria-expanded', 'true');
+        label.textContent = '▲ COLLAPSE';
+        line.classList.remove('cv-timeline__line--hidden');
+      }
+    });
+  }
+
+  initCvTimeline();
+  document.addEventListener('astro:page-load', initCvTimeline);
 </script>
 
 <style>

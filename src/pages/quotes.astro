@@ -73,26 +73,29 @@ const countByAuthor = Object.fromEntries(
 </BaseLayout>
 
 <script>
-  const btns = document.querySelectorAll<HTMLButtonElement>('.author-list__item');
-  const cards = document.querySelectorAll<HTMLElement>('.quote-card');
-  const counter = document.querySelector<HTMLElement>('.quotes-page__main .terminal-frame__header-right');
+  function initQuotes() {
+    const btns = document.querySelectorAll<HTMLButtonElement>('.author-list__item');
+    const cards = document.querySelectorAll<HTMLElement>('.quote-card');
+    const counter = document.querySelector<HTMLElement>('.quotes-page__main .terminal-frame__header-right');
 
-  function filter(author: string) {
-    btns.forEach((b) => b.classList.toggle('author-list__item--active', b.dataset.author === author));
+    function filter(author: string) {
+      btns.forEach((b) => b.classList.toggle('author-list__item--active', b.dataset.author === author));
+      let visible = 0;
+      cards.forEach((card) => {
+        const show = author === 'all' || card.dataset.author === author;
+        card.style.display = show ? '' : 'none';
+        if (show) visible++;
+      });
+      if (counter) counter.textContent = `${visible} ENTRIES`;
+    }
 
-    let visible = 0;
-    cards.forEach((card) => {
-      const show = author === 'all' || card.dataset.author === author;
-      card.style.display = show ? '' : 'none';
-      if (show) visible++;
+    btns.forEach((btn) => {
+      btn.addEventListener('click', () => filter(btn.dataset.author!));
     });
-
-    if (counter) counter.textContent = `${visible} ENTRIES`;
   }
 
-  btns.forEach((btn) => {
-    btn.addEventListener('click', () => filter(btn.dataset.author!));
-  });
+  initQuotes();
+  document.addEventListener('astro:page-load', initQuotes);
 </script>
 
 <style>

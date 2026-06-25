@@ -39,12 +39,17 @@ const socials = profile.socials.map((s) => ({
 </div>
 
 <script>
-  document.querySelectorAll<HTMLAnchorElement>('.contact-panel__row[data-e]').forEach((el) => {
-    const email = atob(el.dataset.e!);
-    el.href = 'mailto:' + email;
-    const text = el.querySelector('[data-email-text]');
-    if (text) text.textContent = email;
-  });
+  function initContactPanel() {
+    document.querySelectorAll<HTMLAnchorElement>('.contact-panel__row[data-e]').forEach((el) => {
+      const email = atob(el.dataset.e!);
+      el.href = 'mailto:' + email;
+      const text = el.querySelector('[data-email-text]');
+      if (text) text.textContent = email;
+    });
+  }
+
+  initContactPanel();
+  document.addEventListener('astro:page-load', initContactPanel);
 </script>
 
 <style>

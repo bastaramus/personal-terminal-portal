@@ -162,33 +162,39 @@ const contacts = profile.socials.map((s) => ({
 
   </main>
 <script>
-  document.querySelectorAll<HTMLElement>('.about-page__prompt-user[data-e]').forEach((el) => {
-    el.textContent = atob(el.dataset.e!);
-  });
+  function initAbout() {
+    document.querySelectorAll<HTMLElement>('.about-page__prompt-user[data-e]').forEach((el) => {
+      el.textContent = atob(el.dataset.e!);
+    });
 
-  document.querySelectorAll<HTMLAnchorElement>('.about-contact-strip__item[data-contact-e]').forEach((el) => {
-    const email = atob(el.dataset.contactE!);
-    el.href = 'mailto:' + email;
-    const text = el.querySelector('[data-contact-text]');
-    if (text) text.textContent = email;
-  });
+    document.querySelectorAll<HTMLAnchorElement>('.about-contact-strip__item[data-contact-e]').forEach((el) => {
+      const email = atob(el.dataset.contactE!);
+      el.href = 'mailto:' + email;
+      const text = el.querySelector('[data-contact-text]');
+      if (text) text.textContent = email;
+    });
 
-  const text = document.getElementById('about-text')!;
-  const btn = document.getElementById('about-expand-btn')!;
-  const label = document.getElementById('about-expand-label')!;
+    const text = document.getElementById('about-text');
+    const btn = document.getElementById('about-expand-btn');
+    const label = document.getElementById('about-expand-label');
+    if (!text || !btn || !label) return;
 
-  btn.addEventListener('click', () => {
-    const expanded = btn.getAttribute('aria-expanded') === 'true';
-    if (expanded) {
-      text.classList.remove('about-panel__text--expanded');
-      btn.setAttribute('aria-expanded', 'false');
-      label.textContent = '▼ READ MORE';
-    } else {
-      text.classList.add('about-panel__text--expanded');
-      btn.setAttribute('aria-expanded', 'true');
-      label.textContent = '▲ COLLAPSE';
-    }
-  });
+    btn.addEventListener('click', () => {
+      const expanded = btn.getAttribute('aria-expanded') === 'true';
+      if (expanded) {
+        text.classList.remove('about-panel__text--expanded');
+        btn.setAttribute('aria-expanded', 'false');
+        label.textContent = '▼ READ MORE';
+      } else {
+        text.classList.add('about-panel__text--expanded');
+        btn.setAttribute('aria-expanded', 'true');
+        label.textContent = '▲ COLLAPSE';
+      }
+    });
+  }
+
+  initAbout();
+  document.addEventListener('astro:page-load', initAbout);
 </script>
 
 </BaseLayout>
