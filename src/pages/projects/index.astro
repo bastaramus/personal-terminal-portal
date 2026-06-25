@@ -52,27 +52,11 @@ const allTags = [...new Set(projects.flatMap((p) => p.tags))].sort();
         <TerminalFrame title="// STACK">
           <div class="stack-list">
             {allTags.map((tag) => (
-              <span class="stack-list__tag">{tag}</span>
+              <a href={`/tags/${tag.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}`} class="stack-list__tag">{tag}</a>
             ))}
           </div>
         </TerminalFrame>
 
-        <TerminalFrame title="// STATS">
-          <div class="sidebar-stats">
-            <div class="sidebar-stats__row">
-              <span class="sidebar-stats__label">TOTAL</span>
-              <span class="sidebar-stats__value">{projects.length}</span>
-            </div>
-            <div class="sidebar-stats__row">
-              <span class="sidebar-stats__label">STARS</span>
-              <span class="sidebar-stats__value">{projects.reduce((s, p) => s + (p.stars ?? 0), 0).toLocaleString()}</span>
-            </div>
-            <div class="sidebar-stats__row">
-              <span class="sidebar-stats__label">FORKS</span>
-              <span class="sidebar-stats__value">{projects.reduce((s, p) => s + (p.forks ?? 0), 0).toLocaleString()}</span>
-            </div>
-          </div>
-        </TerminalFrame>
       </aside>
 
       <section class="projects-page__grid-wrap">
@@ -195,28 +179,18 @@ const allTags = [...new Set(projects.flatMap((p) => p.tags))].sort();
     font-family: var(--font-mono);
     font-size: 0.65rem;
     letter-spacing: 0.06em;
-    color: var(--cyber-text-dim);
-    border: 1px solid rgba(232, 130, 10, 0.2);
+    color: var(--cyber-orange);
+    background: rgba(232, 130, 10, 0.06);
+    border: 1px solid rgba(232, 130, 10, 0.3);
     padding: 2px 6px;
+    text-decoration: none;
+    transition: background 0.15s, border-color 0.15s;
   }
 
-  /* Sidebar stats */
-  .sidebar-stats {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+  .stack-list__tag:hover {
+    background: rgba(232, 130, 10, 0.14);
+    border-color: rgba(232, 130, 10, 0.6);
   }
-
-  .sidebar-stats__row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-  }
-
-  .sidebar-stats__label { color: var(--cyber-text-dim); letter-spacing: 0.06em; }
-  .sidebar-stats__value { color: var(--cyber-orange); }
 
   /* Projects grid */
   .projects-grid {

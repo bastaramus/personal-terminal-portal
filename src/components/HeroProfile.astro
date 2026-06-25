@@ -253,12 +253,15 @@ const promptUserEncoded = Buffer.from("root@xomenko.com").toString("base64");
     display: grid;
     grid-template-columns: 280px 1fr;
     gap: 40px;
-    align-items: center;
+    align-items: stretch;
   }
 
   /* Avatar */
   .hero__avatar-col {
     position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
   }
 
   .hero__avatar-frame {
@@ -357,6 +360,16 @@ const promptUserEncoded = Buffer.from("root@xomenko.com").toString("base64");
   }
 
   /* Content */
+  .hero__content {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .hero__ctas {
+    margin-top: auto;
+    padding-top: 28px;
+  }
+
   .hero__prompt {
     display: flex;
     align-items: center;
@@ -437,7 +450,6 @@ const promptUserEncoded = Buffer.from("root@xomenko.com").toString("base64");
   .hero__ctas {
     display: flex;
     gap: 12px;
-    margin-bottom: 28px;
     flex-wrap: wrap;
   }
 
@@ -541,6 +553,20 @@ const promptUserEncoded = Buffer.from("root@xomenko.com").toString("base64");
       gap: 24px;
       justify-items: center;
       text-align: center;
+      align-items: start;
+    }
+
+    .hero__avatar-col {
+      justify-content: center;
+    }
+
+    .hero__content {
+      width: 100%;
+    }
+
+    .hero__ctas {
+      padding-top: 20px;
+      margin-top: 0;
     }
 
     .hero__avatar-frame {

@@ -158,6 +158,30 @@ Extended project description.
 
 The four project cards on the landing page come from `src/data/projects.ts`, not the content collection. Edit that file directly to update them.
 
+### New quote — `/add-quote`
+
+Quotes are stored in `src/data/quotes.ts` and appear on the landing page (random pick) and on `/quotes` (full collection).
+
+To add a quote, invoke the skill inside a Claude Code session:
+
+```
+/add-quote "The network is the computer." — Sun Microsystems
+```
+
+or just paste the text if you don't know the author:
+
+```
+/add-quote "Move fast and fix things."
+```
+
+Claude will:
+1. Polish punctuation and capitalisation without changing the meaning
+2. Verify or identify the author from its training knowledge (corrects misattributions, falls back to `"Unknown"`)
+3. Check whether the quote already exists in the collection
+4. Append the entry to `src/data/quotes.ts`
+
+The skill touches **only** `src/data/quotes.ts` — nothing else is modified.
+
 ---
 
 ## Design Tokens

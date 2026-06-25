@@ -232,11 +232,6 @@ Email addresses must never appear in rendered HTML or source code. The pattern u
 3. A small inline `<script>` on the same component/page decodes with `atob(el.dataset.e)` and
    sets `el.textContent` (and `el.href` for `mailto:` links) at runtime.
 
-Affected locations:
-- `src/components/ContactPanel.astro` — `hi@xomenko.com` mailto link
-- `src/components/HeroProfile.astro` — decorative `root@xomenko.com` prompt text
-- `src/pages/index.astro` — `root@xomenko.com` in footer
-
 **Do not add email strings to HTML attributes, text nodes, or JS strings in any `.astro` or
 `.ts` file that gets included in the static output.** Always go through this encode/decode pattern.
 
@@ -248,8 +243,5 @@ Affected locations:
 - When adding a new section to the landing page: use `TerminalFrame` and follow the existing
   section structure in `index.astro`.
 - When adding design tokens: add them to both the `@theme` block and `:root` in `global.css`.
-- When asked about ops/infra topics in the context of this portfolio: frame through a
-  DevOps engineering lens — AWS cloud, hybrid AWS+vSphere, IaC, containers, CI/CD.
-  Dmytro Khomenko is a DevOps engineer (not a software engineer), 10+ years experience.
 - Keep responses concise — no trailing summaries, no re-explaining what was just done.
 - Update this CLAUDE.md whenever a new project-level pattern is established.

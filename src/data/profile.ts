@@ -2,12 +2,12 @@ export const profile = {
   name: { first: "DMYTRO", last: "KHOMENKO" },
   title: "DEVOPS ENGINEER",
   tags: ["DEVOPS ARCHITECT", "PLATFORM ENGINEER", "TEAM LEAD"],
-  bio: "From bare-metal servers to cloud-native applications. My background combines hands-on DevOps engineering, platform architecture, and technical leadership. This website is a place to share my experience, projects, and technical notes on building reliable infrastructures, CI/CD processes, and scalable DevOps platforms.",
+  bio: "Infrastructure engineer obsessed with the feedback loop between code and production. I build platforms, automate the boring parts, and write about what I learn along the way.",
   aboutParagraphs: [
-    "DevOps Team Lead and DevOps Architect with 15 years of experience in IT, combining strategic leadership with strong hands-on engineering expertise. I specialize in building DevOps processes from scratch, designing resilient infrastructure, and creating scalable, reliable delivery platforms that support modern software development.",
-    "I have deep experience across the full software development lifecycle and have worked with projects in multiple domains, including large-scale web portals, SaaS platforms, cloud-based web services, mobile applications for iOS and Android, desktop applications built with .NET and C++, firmware projects, and IoT solutions.",
-    "My strength is the ability to connect architecture, automation, infrastructure, and delivery processes into one reliable engineering ecosystem. I can design and implement CI/CD pipelines, build cloud and Kubernetes-based infrastructure, introduce SRE best practices, improve system reliability and observability, and make services highly available, redundant, and resilient.",
-    "In addition to hands-on technical work, I have experience building and leading DevOps teams, mentoring engineers, defining technical direction, and establishing efficient collaboration between development, QA, security, operations, and product teams. I enjoy engineering work deeply — taking small technical building blocks and turning them into large, stable, working systems that create real business value.",
+    "I've been in infrastructure long enough to remember when 'cloud' meant something you hoped wouldn't rain on your physical servers. I started as a NOC engineer watching provider-scale networks, spent years as a sysadmin keeping bare metal alive, and somewhere in that journey fell in love with the problem of making complex systems predictable. Not just keeping them running — making them understandable.",
+    "What actually drives me is the feedback loop between code and production. The moment an engineer pushes a change and knows — really knows — it landed safely, with visibility, with a rollback path, inside a platform that doesn't fight them. I care about that experience. Building it well is harder than it looks and more satisfying than almost anything else in this field.",
+    "Right now I'm deep into the intersection of platform engineering and AI. Not AI as decoration, but using it to compress the operational work that still consumes too much human attention — automating runbooks, surfacing patterns in observability data, building agents that handle the boring parts of a release. The underlying problems haven't changed. The tools have gotten genuinely interesting.",
+    "This site is my logbook. I write here about things I'm building, patterns worth remembering, and rabbit holes that turned out to be worth following. It's not a polished portfolio — if you want the full credentials, grab my CV. This part is for the craft. If something here saves you a debugging session or puts a name to a pattern you've been living with, that's the goal.",
   ],
   location: "Wroclaw, Poland / Remote",
   languages: [
@@ -25,22 +25,6 @@ export const profile = {
   ],
 };
 
-export const education = [
-  {
-    degree: "Master's Degree",
-    specialization: "Systems and Methods of Decision Making",
-    school: "National Technical University of Ukraine",
-    faculty: "Institute for Applied System Analysis",
-    period: "2012 — 2014",
-  },
-  {
-    degree: "Bachelor's Degree",
-    specialization: "Computer Science",
-    school: "National Technical University of Ukraine",
-    faculty: "Institute for Applied System Analysis",
-    period: "2008 — 2012",
-  },
-];
 
 export const experience = [
   {

@@ -3,9 +3,11 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 import NavBar from "@/components/NavBar.astro";
 import TerminalFrame from "@/components/TerminalFrame.astro";
 import PostCard from "@/components/PostCard.astro";
+import ProjectCard from "@/components/ProjectCard.astro";
 import SiteFooter from "@/components/SiteFooter.astro";
 import { getCollection } from "astro:content";
 import { skillCategories } from "@/data/skills";
+import { projects } from "@/data/projects";
 
 export async function getStaticPaths() {
   const posts = await getCollection("blog", ({ data }) => !data.draft);
@@ -15,7 +17,8 @@ export async function getStaticPaths() {
 
   const blogTagSlugs = [...new Set(posts.flatMap((p) => p.data.tags.map(toSlug)))];
   const skillSlugs = [...new Set(skillCategories.flatMap((c) => c.skills.map(toSlug)))];
-  const allSlugs = [...new Set([...blogTagSlugs, ...skillSlugs])];
+  const projectTagSlugs = [...new Set(projects.flatMap((p) => p.tags.map(toSlug)))];
+  const allSlugs = [...new Set([...blogTagSlugs, ...skillSlugs, ...projectTagSlugs])];
 
   return allSlugs.map((tag) => ({ params: { tag } }));
 }
@@ -29,34 +32,51 @@ const allPosts = (await getCollection("blog", ({ data }) => !data.draft))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
 const posts = allPosts.filter((p) => p.data.tags.map(toSlug).includes(tag));
+const matchedProjects = projects.filter((p) => p.tags.map(toSlug).includes(tag));
 
 const matchingSkill = skillCategories
   .flatMap((c) => c.skills)
   .find((s) => toSlug(s) === tag);
 
-const displayName = matchingSkill ?? tag;
+const matchingProjectTag = projects
+  .flatMap((p) => p.tags)
+  .find((t) => toSlug(t) === tag);
+
+const displayName = matchingSkill ?? matchingProjectTag ?? tag;
+const totalResults = posts.length + matchedProjects.length;
 ---
 
 <BaseLayout
   title={`#${displayName} — Dmytro Khomenko`}
-  description={`Posts tagged with ${displayName}.`}
+  description={`Posts and projects tagged with ${displayName}.`}
 >
   <NavBar />
   <main class="tag-page">
 
     <section class="tag-page__header">
       <div class="tag-page__prompt">
-        <span class="tag-page__prompt-path">~/blog/tags</span>
+        <span class="tag-page__prompt-path">~/tags</span>
         <span class="tag-page__prompt-sep">$</span>
         <span class="tag-page__prompt-cmd">grep -r "{tag}"</span>
         <span class="blink tag-page__cursor">▌</span>
       </div>
       <h1 class="tag-page__title">#{displayName}</h1>
-      <p class="tag-page__subtitle">{posts.length} {posts.length === 1 ? "post" : "posts"} tagged</p>
+      <p class="tag-page__subtitle">{totalResults} {totalResults === 1 ? "result" : "results"} — {posts.length} {posts.length === 1 ? "post" : "posts"}, {matchedProjects.length} {matchedProjects.length === 1 ? "project" : "projects"}</p>
     </section>
 
     <div class="tag-page__body">
-      <TerminalFrame title={`// TAG:${tag.toUpperCase()}`} headerRight={`${posts.length} RESULTS`}>
+
+      {matchedProjects.length > 0 && (
+        <TerminalFrame title={`// PROJECTS`} headerRight={`${matchedProjects.length} REPOS`}>
+          <div class="projects-grid">
+            {matchedProjects.map((project) => (
+              <ProjectCard project={project} />
+            ))}
+          </div>
+        </TerminalFrame>
+      )}
+
+      <TerminalFrame title={`// POSTS`} headerRight={`${posts.length} ENTRIES`}>
         {posts.length > 0 ? (
           <div class="posts-grid">
             {posts.map((post) => (
@@ -73,14 +93,14 @@ const displayName = matchingSkill ?? tag;
           <div class="tag-page__empty">
             <span class="tag-page__empty-icon">_</span>
             <p class="tag-page__empty-text">No posts with this tag yet.</p>
-            <a href="/blog" class="tag-page__back">← ALL POSTS</a>
           </div>
         )}
       </TerminalFrame>
+
     </div>
 
     <div class="tag-page__nav">
-      <a href="/blog" class="tag-page__back">← ALL POSTS</a>
+      <a href="/blog" class="tag-page__back" id="back-btn">← BACK</a>
     </div>
 
     <SiteFooter />
@@ -130,6 +150,18 @@ const displayName = matchingSkill ?? tag;
     font-size: 0.82rem;
     color: var(--cyber-text-dim);
     margin: 0;
+  }
+
+  .tag-page__body {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
   }
 
   .posts-grid {
@@ -190,3 +222,18 @@ const displayName = matchingSkill ?? tag;
     }
   }
 </style>
+
+<script>
+  function initBackButton() {
+    const prev = document.referrer;
+    const isSameOrigin = prev && new URL(prev).origin === location.origin;
+    const el = document.getElementById("back-btn");
+    if (!el) return;
+    el.textContent = isSameOrigin ? "← BACK" : "← ALL POSTS";
+    el.href = isSameOrigin ? prev : "/blog";
+    if (isSameOrigin) {
+      el.addEventListener("click", (e) => { e.preventDefault(); history.back(); });
+    }
+  }
+  initBackButton();
+</script>

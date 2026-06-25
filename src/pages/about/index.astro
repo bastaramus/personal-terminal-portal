@@ -5,7 +5,7 @@ import TerminalFrame from "@/components/TerminalFrame.astro";
 import SkillTag from "@/components/SkillTag.astro";
 import CvTimeline from "@/components/CvTimeline.astro";
 import SiteFooter from "@/components/SiteFooter.astro";
-import { profile, education } from "@/data/profile";
+import { profile } from "@/data/profile";
 import { skillCategories } from "@/data/skills";
 const promptUserEncoded = Buffer.from("root@xomenko.com").toString("base64");
 
@@ -48,8 +48,10 @@ const contacts = profile.socials.map((s) => ({
         <div class="about-panel__body">
           <div class="about-panel__section-label">SUMMARY</div>
           <div class="about-panel__text" id="about-text">
-            {profile.aboutParagraphs.map((p) => (
-              <p class="about-panel__bio">{p}</p>
+            {profile.aboutParagraphs.map((p, i) => (
+              i === profile.aboutParagraphs.length - 1
+                ? <p class="about-panel__bio" set:html={p.replace('grab my CV', 'grab my <a class="about-panel__cv-link" href="/cv.pdf" target="_blank" rel="noopener">CV</a>')} />
+                : <p class="about-panel__bio">{p}</p>
             ))}
           </div>
           <button class="about-panel__expand-btn" id="about-expand-btn" aria-expanded="false">
@@ -105,59 +107,37 @@ const contacts = profile.socials.map((s) => ({
             </div>
 
             <div class="about-panel__edu">
-              <div class="about-panel__section-label">EDUCATION</div>
-              <div class="edu-list">
-                {education.map((item, i) => (
-                  <div class="edu-item">
-                    <div class="edu-item__marker">
-                      <span class="edu-item__dot" />
-                      {i < education.length - 1 && <span class="edu-item__line" />}
-                    </div>
-                    <div class="edu-item__content">
-                      <div class="edu-item__specialization">{item.specialization}</div>
-                      <div class="edu-item__header">
-                        <span class="edu-item__degree">{item.degree}</span>
-                        <span class="edu-item__period">{item.period}</span>
-                      </div>
-                      <div class="edu-item__school">@ {item.school}</div>
-                      <div class="edu-item__faculty">{item.faculty}</div>
-                    </div>
-                  </div>
-                ))}
+              <div class="about-panel__section-label">CONTACT</div>
+              <div class="about-contact-strip about-contact-strip--column">
+                {contacts.map((s) =>
+                  s.encoded ? (
+                    <a href="#" class="about-contact-strip__item" data-contact-e={s.encoded}>
+                      <span class="about-contact-strip__icon" set:html={s.icon} />
+                      <span class="about-contact-strip__label">{s.label}</span>
+                      <span class="about-contact-strip__value" data-contact-text></span>
+                    </a>
+                  ) : (
+                    <a href={s.href} class="about-contact-strip__item" target="_blank" rel="noopener">
+                      <span class="about-contact-strip__icon" set:html={s.icon} />
+                      <span class="about-contact-strip__label">{s.label}</span>
+                      <span class="about-contact-strip__value">{s.value}</span>
+                    </a>
+                  )
+                )}
               </div>
             </div>
-          </div>
-
-          <!-- Contact strip -->
-          <div class="about-panel__divider"></div>
-          <div class="about-panel__section-label">CONTACT</div>
-          <div class="about-contact-strip">
-            {contacts.map((s) =>
-              s.encoded ? (
-                <a href="#" class="about-contact-strip__item" data-contact-e={s.encoded}>
-                  <span class="about-contact-strip__icon" set:html={s.icon} />
-                  <span class="about-contact-strip__label">{s.label}</span>
-                  <span class="about-contact-strip__value" data-contact-text></span>
-                </a>
-              ) : (
-                <a href={s.href} class="about-contact-strip__item" target="_blank" rel="noopener">
-                  <span class="about-contact-strip__icon" set:html={s.icon} />
-                  <span class="about-contact-strip__label">{s.label}</span>
-                  <span class="about-contact-strip__value">{s.value}</span>
-                </a>
-              )
-            )}
           </div>
         </div>
       </TerminalFrame>
     </div>
 
-    <!-- Experience — full width -->
+    {/* Experience — hidden until ready
     <div class="about-page__row">
       <TerminalFrame title="// EXPERIENCE">
         <CvTimeline />
       </TerminalFrame>
     </div>
+    */}
 
     <!-- Skills — full width -->
     <div class="about-page__row">
@@ -331,6 +311,18 @@ const contacts = profile.socials.map((s) => ({
     color: var(--cyber-text);
     line-height: 1.75;
     margin: 0;
+  }
+
+  :global(.about-panel__cv-link) {
+    color: var(--cyber-orange);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(232, 130, 10, 0.4);
+    transition: border-color 0.15s, color 0.15s;
+  }
+
+  :global(.about-panel__cv-link:hover) {
+    color: var(--cyber-text-bright);
+    border-bottom-color: var(--cyber-orange);
   }
 
   .about-panel__divider {
@@ -512,96 +504,14 @@ const contacts = profile.socials.map((s) => ({
     display: none;
   }
 
-  /* Education */
-  .edu-list {
-    display: flex;
+  .about-contact-strip--column {
     flex-direction: column;
-    gap: 0;
+    gap: 6px;
   }
 
-  .edu-item {
-    display: flex;
-    gap: 12px;
-  }
-
-  .edu-item__marker {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    flex-shrink: 0;
-    padding-top: 4px;
-  }
-
-  .edu-item__dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: rgba(232, 130, 10, 0.4);
-    border: 1px solid rgba(232, 130, 10, 0.5);
-    flex-shrink: 0;
-  }
-
-  .edu-item__line {
-    width: 1px;
-    flex: 1;
-    background: rgba(232, 130, 10, 0.2);
-    margin-top: 4px;
-    min-height: 16px;
-  }
-
-  .edu-item__content {
-    padding-bottom: 16px;
-    flex: 1;
-    min-width: 0;
-  }
-
-  .edu-item__header {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-bottom: 2px;
-  }
-
-  .edu-item__degree {
-    font-family: var(--font-sans);
-    font-size: 0.82rem;
-    font-weight: 600;
-    color: var(--cyber-text-bright);
-    letter-spacing: 0.02em;
-  }
-
-  .edu-item__specialization {
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    color: var(--cyber-orange);
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    margin-bottom: 3px;
-  }
-
-  .edu-item__period {
-    font-family: var(--font-mono);
-    font-size: 0.68rem;
-    color: var(--cyber-orange);
-    letter-spacing: 0.08em;
-    flex-shrink: 0;
-  }
-
-  .edu-item__school {
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    color: var(--cyber-orange);
-    letter-spacing: 0.04em;
-    margin-bottom: 2px;
-  }
-
-  .edu-item__faculty {
-    font-family: var(--font-mono);
-    font-size: 0.68rem;
-    color: var(--cyber-text-dim);
-    letter-spacing: 0.03em;
+  .about-contact-strip--column .about-contact-strip__item {
+    min-width: unset;
+    flex: unset;
   }
 
   @media (max-width: 768px) {

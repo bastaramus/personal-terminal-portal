@@ -24,4 +24,8 @@ export const quotes: Quote[] = [
     text: "The best way to predict the future is to invent it.",
     author: "Alan Kay",
   },
+  {
+    text: "You're only as good as your last race.",
+    author: "F1 Racers",
+  },
 ];
